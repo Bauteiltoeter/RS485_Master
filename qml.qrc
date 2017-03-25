@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>LCARSButton.qml</file>
+        <file>topmenu.svg</file>
+        <file>LCARSButtonPanel.qml</file>
+        <file>bottommenu.svg</file>
+        <file>topleftcorner.svg</file>
+        <file>bottomleftcorner.svg</file>
+        <file>LCARSText.qml</file>
+    </qresource>
+</RCC>
