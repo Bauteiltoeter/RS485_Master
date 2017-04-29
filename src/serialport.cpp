@@ -29,7 +29,7 @@ void SerialPort::connect(QString name, speed_t speed)
     /* Error Handling */
     if ( USB < 0 )
     {
-        emit errorSignal("USB");
+        emit errorSignal("USB handler invalid");
         return;
     }
 
@@ -40,6 +40,7 @@ void SerialPort::connect(QString name, speed_t speed)
     /* Error Handling */
     if ( tcgetattr ( USB, &tty ) != 0 )
     {
+        qDebug() << "Error: tcgerattr";
         emit errorSignal("tcgerattr");
         return;
     }
@@ -69,6 +70,7 @@ void SerialPort::connect(QString name, speed_t speed)
 
     if ( tcsetattr ( USB, TCSANOW, &tty ) != 0)
     {
+        qDebug() << QString("Error") + errno  + " from tcsetattr";
         errorSignal(QString("Error") + errno  + " from tcsetattr");
         return;
     }

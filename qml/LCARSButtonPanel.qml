@@ -9,7 +9,7 @@ Item {
 
     Image {
         id: topleftcorner
-        source: "topleftcorner.svg"
+        source: "qrc:/images/topleftcorner.svg"
 
         anchors.left: parent.left
         anchors.top: parent.top
@@ -42,19 +42,34 @@ Item {
         columns: 1
         spacing: 5
 
-        LCARSButton {
+        LCARSSiteButton {
             width: parent.width
-            text: "Test1"
+            text: con.connected ? "Disconnect" : "Connect"
+            onClicked: {
+                con.connected=!con.connected;
+            }
         }
 
-        LCARSButton {
+        LCARSSiteButton {
             width: parent.width
-            text: "Test2"
+            visible: con.connected
+            anchors.top: connectButton.bottom
+            anchors.topMargin: 5
+            text: "Init ID"
+            onClicked: {
+                con.send();
+            }
         }
 
-        LCARSButton {
+        LCARSSiteButton {
             width: parent.width
-            text: "Test3"
+            visible: con.connected
+            anchors.top: sendButton.bottom
+            anchors.topMargin: 5
+            text: "Send Text"
+            onClicked: {
+                con.sendText();
+            }
         }
 
     }
@@ -66,8 +81,12 @@ Item {
         anchors.bottom: bottomleftcorner.top
         anchors.right: parent.right
 
+        Rectangle {
 
-
+                 anchors.fill: parent
+                 color: "#000000"
+              //   color: "#FF00FF"
+         }
     }
 
 
@@ -84,7 +103,7 @@ Item {
 
     Image {
         id: bottomleftcorner
-        source: "bottomleftcorner.svg"
+        source: "qrc:/images/bottomleftcorner.svg"
 
         anchors.left: parent.left
         anchors.bottom: parent.bottom

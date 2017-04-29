@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/topmenu.svg</file>
+        <file>images/bottommenu.svg</file>
+        <file>images/topleftcorner.svg</file>
+        <file>images/bottomleftcorner.svg</file>
+        <file>images/panel_bottomleft.svg</file>
+        <file>images/panel_bottomright.svg</file>
+        <file>images/panel_topleft.svg</file>
+        <file>images/panel_topright.svg</file>
+        <file>images/panel_bottomleft_bl.svg</file>
+        <file>images/panel_bottomright_bl.svg</file>
+        <file>images/panel_topleft_bl.svg</file>
+        <file>images/panel_topright_bl.svg</file>
+    </qresource>
+</RCC>

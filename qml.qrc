@@ -1,12 +1,11 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
-        <file>LCARSButton.qml</file>
-        <file>topmenu.svg</file>
-        <file>LCARSButtonPanel.qml</file>
-        <file>bottommenu.svg</file>
-        <file>topleftcorner.svg</file>
-        <file>bottomleftcorner.svg</file>
-        <file>LCARSText.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/LCARSSiteButton.qml</file>
+        <file>qml/LCARSButtonPanel.qml</file>
+        <file>qml/LCARSText.qml</file>
+        <file>qml/Panel.qml</file>
+        <file>qml/LCARSMessageWindow.qml</file>
+        <file>qml/LCARSButton.qml</file>
     </qresource>
 </RCC>

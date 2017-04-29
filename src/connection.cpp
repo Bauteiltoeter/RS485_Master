@@ -1,7 +1,7 @@
 #include "connection.h"
 #include <QDebug>
 #include <termios.h>
-
+#include "messagecontroller.h"
 connection::connection(QObject *parent) : QObject(parent)
 {
     serial=NULL;
@@ -163,8 +163,10 @@ void connection::connectionSuccess()
 
 void connection::connectionError(QString msg)
 {
-    this->msg=msg;
-    emit messageChanged();
+    qDebug() << "Connection error: " << msg;
+
+    MessageController::Instance()->addMessage(msg);
+
 }
 
 uint8_t connection::calc_checksum(uint8_t* data, uint8_t length)

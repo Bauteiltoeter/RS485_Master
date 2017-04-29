@@ -7,6 +7,7 @@ ApplicationWindow {
     visible: true
     width: 1920
     height: 1060
+
     title: qsTr("Hello World")
     color: "#FFFFFF"
     background: Rectangle{
@@ -17,11 +18,12 @@ ApplicationWindow {
     LCARSButtonPanel {
         anchors.fill: parent
 
-      /*  content: LCARSButtonPanel {
 
-                anchors.fill: parent
+    }
 
-        }*/
+
+    LCARSMessageWindow {
+        anchors.centerIn: parent
     }
 
     /*LCARSButton {
