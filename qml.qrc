@@ -7,5 +7,11 @@
         <file>qml/Panel.qml</file>
         <file>qml/LCARSMessageWindow.qml</file>
         <file>qml/LCARSButton.qml</file>
+        <file>qml/FreeTextPanel.qml</file>
+        <file>qml/LCARSTextField.qml</file>
+        <file>qml/LCARSTextArea.qml</file>
+        <file>qml/ConnectPanel.qml</file>
+        <file>qml/BrightnessPanel.qml</file>
+        <file>qml/LCARSSlider.qml</file>
     </qresource>
 </RCC>

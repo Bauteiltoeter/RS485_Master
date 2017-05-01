@@ -2,10 +2,12 @@
 #include <QQmlApplicationEngine>
 #include "connection.h"
 #include "messagecontroller.h"
+#include "display.h"
 
 static QObject* example_qjsvalue_singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
 
     MessageController tmp;
 
@@ -22,6 +24,7 @@ int main(int argc, char *argv[])
 
     qRegisterMetaType<size_t>("size_t");
     qmlRegisterType<connection>("Displaymaster.connectionManager", 1, 0, "ConnectionManager");
+    qmlRegisterType<Display>("Displaymaster.display", 1, 0, "Display");
 
     qmlRegisterSingletonType<MessageController>("Displaymaster.messageController",1,0,"MessageController", example_qjsvalue_singletontype_provider);
 

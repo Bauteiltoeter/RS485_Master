@@ -111,3 +111,11 @@ void SerialPort::writeBytes(uint8_t* bytes, size_t length)
         qDebug("0x%02X      %d", (unsigned int)bytes[i],(unsigned int)bytes[i]);
     write( USB, bytes, length );
 }
+
+bool SerialPort::isConnected()
+{
+    if(USB<0)
+        return false;
+    else
+        return true;
+}

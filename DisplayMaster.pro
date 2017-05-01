@@ -5,7 +5,11 @@ CONFIG += c++11
 SOURCES += src/main.cpp \
     src/connection.cpp \
     src/serialport.cpp \
-    src/messagecontroller.cpp
+    src/messagecontroller.cpp \
+    src/message.cpp \
+    src/segmentdisplay.cpp \
+    src/display.cpp \
+    src/communicator.cpp
 
 RESOURCES += qml.qrc \
 		images.qrc
@@ -35,4 +39,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     src/connection.h \
     src/serialport.h \
-    src/messagecontroller.h
+    src/messagecontroller.h \
+    src/message.h \
+    src/segmentdisplay.h \
+    src/display.h \
+    src/communicator.h

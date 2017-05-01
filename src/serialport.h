@@ -15,6 +15,7 @@ public:
     void run();
     void stop();
     void writeBytes(uint8_t* bytes, size_t length);
+    bool isConnected();
 
 signals:
     void errorSignal(QString msg);

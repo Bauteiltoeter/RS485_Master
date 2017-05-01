@@ -1,6 +1,8 @@
 import QtQuick 2.0
 
+
 Item {
+    property string page: "connect"
 
     anchors.fill: parent
     property int barsize: 300
@@ -43,32 +45,34 @@ Item {
         spacing: 5
 
         LCARSSiteButton {
-            width: parent.width
+            width: parent.width + ( (page=="connect") ? 20 : 0)
             text: con.connected ? "Disconnect" : "Connect"
+
             onClicked: {
+                page = "connect"
                 con.connected=!con.connected;
             }
         }
 
         LCARSSiteButton {
-            width: parent.width
+            width: parent.width + ( (page=="freetext") ? 20 : 0)
             visible: con.connected
-            anchors.top: connectButton.bottom
+            anchors.top: sendButton.bottom
             anchors.topMargin: 5
-            text: "Init ID"
+            text: "Free text"
             onClicked: {
-                con.send();
+                page="freetext" //con.sendText();
             }
         }
 
         LCARSSiteButton {
-            width: parent.width
+            width: parent.width + ( (page=="brightness") ? 20 : 0)
             visible: con.connected
             anchors.top: sendButton.bottom
             anchors.topMargin: 5
-            text: "Send Text"
+            text: "Brightness"
             onClicked: {
-                con.sendText();
+                page="brightness"
             }
         }
 
@@ -81,12 +85,19 @@ Item {
         anchors.bottom: bottomleftcorner.top
         anchors.right: parent.right
 
-        Rectangle {
+        FreeTextPanel {
+            visible: page==="freetext"
+        }
 
-                 anchors.fill: parent
-                 color: "#000000"
-              //   color: "#FF00FF"
-         }
+        ConnectPanel {
+            visible: page==="connect"
+        }
+
+        BrightnessPanel {
+            visible: page=="brightness"
+        }
+
+
     }
 
 

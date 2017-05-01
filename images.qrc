@@ -12,5 +12,6 @@
         <file>images/panel_bottomright_bl.svg</file>
         <file>images/panel_topleft_bl.svg</file>
         <file>images/panel_topright_bl.svg</file>
+        <file>images/triangle.svg</file>
     </qresource>
 </RCC>

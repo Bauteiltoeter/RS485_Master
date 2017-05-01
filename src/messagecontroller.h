@@ -5,24 +5,24 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include "message.h"
 
 class MessageController : public QObject {
     Q_OBJECT
 
     Q_PROPERTY(bool messageBoxVisible READ messageBoxVisible NOTIFY messageBoxVisibleChanged)
     Q_PROPERTY(QString message READ message NOTIFY messageChanged)
+    Q_PROPERTY(bool isError READ isError NOTIFY isErrorChanged)
 
 public:
     MessageController();
+    ~MessageController();
 
-    static MessageController* Instance()
-          {
-            static MessageController singleton;
-            return &singleton;
-          }
+    static MessageController* Instance();
 
     bool messageBoxVisible();
-    void addMessage(QString msg);
+    bool isError();
+    void addMessage(Message* msg);
     QString message();
 
 public slots:
@@ -31,9 +31,10 @@ public slots:
 signals:
     void messageBoxVisibleChanged();
     void messageChanged();
+    void isErrorChanged();
 
 private:
-    QStringList msgList;
+    QList<Message*> msgList;
 
 
 };
