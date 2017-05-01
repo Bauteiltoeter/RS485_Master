@@ -36,8 +36,6 @@ bool MessageController::isError()
     if(msgList.empty())
         return false;
 
-    qDebug() << "isError: " + msgList.first()->isError();
-
     return msgList.first()->isError();
 }
 

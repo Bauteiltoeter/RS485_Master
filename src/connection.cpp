@@ -4,47 +4,39 @@
 #include "messagecontroller.h"
 connection::connection(QObject *parent) : QObject(parent)
 {
-    serial=NULL;
     numberOfDisplays=-1;
     memset(framebuffer,0,sizeof(framebuffer));
+
+    connect(&communicator,SIGNAL(serialSuccess()),this,SLOT(connectionSuccess()));
+    connect(&communicator,SIGNAL(serialError(QString)),this,SLOT(connectionError(QString)));
+    connect(&communicator,SIGNAL(connectionStatusChanged()),this,SLOT(connectionStatusChanged()));
+    communicator.start();
 }
 
 void connection::setConnected(bool c)
 {
-    if(c==false)
+    if(c)
     {
-        if(serial)
-        {
-            serial->stop();
-            delete serial;
-        }
-        serial=NULL;
-        emit connectedChanged();
+        communicator.serialConnect();
     }
     else
     {
-        serialConnect();
-
+        communicator.serialDisconnect();
     }
 }
 
 bool connection::connected()
 {
-    if(serial && serial->isConnected())
-        return true;
-    else
-        return false;
+    return communicator.isConnected();
 }
 
-
-
-void connection::sendText()
+void connection::connectionStatusChanged()
 {
-
-    writeText(QStringList() <<  "Viele gruesse in die" <<
-                                "Runde aus Ingolstadt" <<
-                                "wuenscht Torben");
+    emit connectedChanged();
 }
+
+
+
 
 void connection::syncFramebuffer()
 {
@@ -79,7 +71,6 @@ void connection::writeText(QStringList strings)
 
     for(int i=0; i < 4 && i < strings.length(); i++)
     {
-        qDebug() << "strncpy index: " << i;
         QString tmp =  strings[i];
         QByteArray array = tmp.toLocal8Bit();
         char* buffer = array.data();
@@ -110,7 +101,20 @@ void connection::setBrightness(double value)
     qDebug() << "NumberOfDisplays:" << numberOfDisplays;
 
     for(int i=0; i<4;i++)
-        sendDatatransfer(i,brightness_update,&buffer,1);
+    {
+        Communicator::package_t* package = communicator.getNewPackage();
+
+        package->id = i;
+        package->data = &buffer;
+        package->length = 1;
+        package->mode = Communicator::brightness_update;
+
+        communicator.sendPackage(package);
+
+
+       // sendDatatransfer(i,brightness_update,&buffer,1);
+
+    }
 }
 
 QByteArray connection::framebufferContent()
@@ -126,74 +130,27 @@ QByteArray connection::framebufferContent()
         tmp.append(framebuffer[0][i]);
 
     }
-    qDebug()  << "fetching framebuffer content:" << tmp;
-
     return tmp;
-
-}
-
-
-void connection::processSerial(uint8_t *buffer, size_t length)
-{
-    qDebug() << "Got " << length << " bytes";
-    qDebug() << "Received: ";
-    for(unsigned int i=0; i < length; i++)
-        qDebug("0x%02X", (unsigned int)buffer[i]);
-
-    for(size_t i=0; i<length; i++)
-        processStatemachine(buffer[i]);
-
-    delete buffer;
-}
-
-void connection::processStatemachine(uint8_t data)
-{
-
-
-    //numberOfDisplays=buffer[1];
-   //  emit displayCountChanged();
 }
 
 
 
-void connection::serialConnect()
-{
-    if(serial && !serial->isConnected())
-    {
-       // serial->deleteLater();
-        serial=NULL;
-    }
 
-    if(!serial )
-    {
-        serial = new SerialPort();
 
-        qDebug() << connect(serial,SIGNAL(connected()),this,SLOT(connectionSuccess()));
-        connect(serial,SIGNAL(errorSignal(QString)),this,SLOT(connectionError(QString)));
-        connect(serial,SIGNAL(newData(uint8_t*,size_t)),this,SLOT(processSerial(uint8_t*,size_t)));
-        serial->connect("/dev/ttyUSB0",B9600);
-        qDebug() << "Connection created";
-        serial->start();
-        emit connectedChanged();
-        initID();
-    }
-    else
-    {
-        qDebug() << "Connection already created";
-    }
-}
-
-void connection::initID()
-{
-    uint8_t data[] = {0,0};
-    serial->writeBytes(data,2);
-}
 
 void connection::sendDisplayText(int id, char* text)
 {
-    qDebug("connection::sendDisplayText(%d, %s)",id,text);
+    uint8_t* buffer = new uint8_t[20];
+    memcpy(buffer,text,20);
 
-    sendDatatransfer(id,character_update,(uint8_t*)text,20);
+    Communicator::package_t* package = communicator.getNewPackage();
+
+    package->id = id;
+    package->data = buffer;
+    package->length = 20;
+    package->mode = Communicator::character_update;
+
+    communicator.sendPackage(package);
 }
 
 int connection::displayCount()
@@ -216,30 +173,4 @@ void connection::connectionError(QString msg)
 
 }
 
-uint8_t connection::calc_checksum(uint8_t* data, uint8_t length)
-{
-    uint8_t temp=0;
-    for(uint16_t i=0; i < length; i++)
-    {
-        temp^=data[i];
-    }
-    return temp;
-}
-
-void connection::sendDatatransfer(int id, connection::datatypes mode, uint8_t *buffer, size_t length)
-{
-    uint8_t data[256];
-    data[0] = data_transmit;
-    data[1] = id; //message id
-    data[2] = length+2; //length+modeword+checksum
-    data[3] = mode;
-    memcpy(data+4,buffer,length);
-    data[length+4]= calc_checksum(data+3,length+1); //checksum
-
-    char debug[256];
-    memcpy(debug,data,256);
-
-    if(serial)
-        serial->writeBytes(data,length+5);
-}
 

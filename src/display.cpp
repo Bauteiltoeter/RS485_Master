@@ -57,13 +57,12 @@ void Display::setColumns(int c)
 
 void Display::setContent(QByteArray content)
 {
-    qDebug() << "Updating content";
+
 
     for(int i=0; i < displays.size() && i < content.size()
         ; i++)
     {
-        qDebug() << "Char " << i << "content: " << content.at(i);
-        displays[i]->setCharacter(content.at(i) );
+       displays[i]->setCharacter(content.at(i) );
     }
 
     update();

@@ -13,5 +13,7 @@
         <file>qml/ConnectPanel.qml</file>
         <file>qml/BrightnessPanel.qml</file>
         <file>qml/LCARSSlider.qml</file>
+        <file>qml/DynamicPanel.qml</file>
+        <file>qml/LCARSCheckBox.qml</file>
     </qresource>
 </RCC>

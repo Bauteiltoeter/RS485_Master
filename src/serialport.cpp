@@ -106,9 +106,9 @@ void SerialPort::stop()
 
 void SerialPort::writeBytes(uint8_t* bytes, size_t length)
 {
-    qDebug() << "Sending bytes:";
-    for(unsigned int i=0; i < length; i++)
-        qDebug("0x%02X      %d", (unsigned int)bytes[i],(unsigned int)bytes[i]);
+  //  qDebug() << "Sending bytes:";
+  //  for(unsigned int i=0; i < length; i++)
+   //     qDebug("0x%02X      %d", (unsigned int)bytes[i],(unsigned int)bytes[i]);
     write( USB, bytes, length );
 }
 

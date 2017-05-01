@@ -4,6 +4,7 @@ import QtQuick.Controls.Styles 1.4
 
 Slider {
     id: slider
+    property bool inactive: false;
 
     style: SliderStyle {
 
@@ -36,7 +37,10 @@ Slider {
                             text: index*10+"%"
 
 
-                            color: index%2==0? "#cc6666" : "#ffcc99"
+                            color: index%2==0?
+                                       inactive?"#555" : "#cc6666"
+                                     :
+                                       inactive?"#777" : "#ffcc99"
                         }
                     }
                 }
@@ -56,7 +60,10 @@ Slider {
                         height: 10
 
                         width: (slider.width-30-9*2)/10
-                        color: index%2==0? "#cc6666" : "#ffcc99"
+                        color: index%2==0?
+                                   inactive?"#555" : "#cc6666"
+                                 :
+                                   inactive?"#777" : "#ffcc99"
                     }
                 }
             }
