@@ -15,5 +15,10 @@
         <file>qml/LCARSSlider.qml</file>
         <file>qml/DynamicPanel.qml</file>
         <file>qml/LCARSCheckBox.qml</file>
+        <file>qml/CharacterPanel.qml</file>
+        <file>qml/ContentBasic.qml</file>
+        <file>qml/ContentClock.qml</file>
+        <file>qml/ContentFinger.qml</file>
+        <file>qml/ContentMonitoring.qml</file>
     </qresource>
 </RCC>

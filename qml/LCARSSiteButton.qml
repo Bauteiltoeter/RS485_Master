@@ -6,10 +6,13 @@ Rectangle {
     property string text: ""
     property color normalColor: "#FF9900"
     property color clickedColor: "#BB6600"
+    property int defaultWidth: 200
+    property bool active: false
     signal clicked;
 
     color: clickArea.pressed? clickedColor: normalColor
-    width: 200
+    width: (active) ? defaultWidth+20 : defaultWidth
+
     height: 50
     LCARSText {
 

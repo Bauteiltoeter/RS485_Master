@@ -15,62 +15,99 @@ ApplicationWindow {
     }
 
 
+    property string page: "connect"
+
     LCARSButtonPanel {
+        id: mainPanel
         anchors.fill: parent
+        header:  "System display"
+        footer:  "V 0.0.1"
 
 
+        buttons: [
+            LCARSSiteButton {
+                active: page=="connect" ? 20 : 0
+                defaultWidth: mainPanel.buttonsize
+                text: Con.connected ? "Disconnect" : "Connect"
+
+                onClicked: {
+                    page = "connect"
+                    Con.connected=!Con.connected;
+                }
+            },
+
+            LCARSSiteButton {
+                active: page=="freetext" ? 20 : 0
+                defaultWidth: mainPanel.buttonsize
+                visible: Con.connected
+                anchors.topMargin: 5
+                text: "Free text"
+                onClicked: {
+                    page="freetext" //con.sendText();
+                }
+            },
+
+            LCARSSiteButton {
+                active: page=="brightness" ? 20 : 0
+                defaultWidth: mainPanel.buttonsize
+                visible: Con.connected
+                anchors.topMargin: 5
+                text: "Brightness"
+                onClicked: {
+                    page="brightness"
+                }
+            },
+
+            LCARSSiteButton {
+                active: page=="content" ? 20 : 0
+                defaultWidth: mainPanel.buttonsize
+                visible: true//con.connected
+                anchors.topMargin: 5
+                text: "Dynamic content"
+                onClicked: {
+                    page="content"
+                }
+            },
+
+            LCARSSiteButton {
+                active: page=="chareditor" ? 20 : 0
+                defaultWidth: mainPanel.buttonsize
+                visible: true//con.connected
+                anchors.topMargin: 5
+                text: "Character editor"
+                onClicked: {
+                    page="chareditor"
+                }
+            }
+        ]
+
+        contents: [
+            FreeTextPanel {
+                visible: page==="freetext"
+            },
+
+            ConnectPanel {
+                visible: page==="connect"
+            },
+
+            BrightnessPanel {
+                visible: page==="brightness"
+            },
+
+            DynamicPanel {
+                visible: page==="content"
+            },
+
+            CharacterPanel {
+                visible: page==="chareditor"
+            }
+
+        ]
     }
-
 
     LCARSMessageWindow {
         anchors.centerIn: parent
     }
 
-    /*LCARSButton {
-        id: connectButton
-        text: con.connected ? "Disconnect" : "Connect"
-        onClicked: {
-            con.connected=!con.connected;
-        }
-    }
-
-    LCARSButton {
-        id: sendButton
-        visible: con.connected
-        anchors.top: connectButton.bottom
-        anchors.topMargin: 5
-        text: "Init ID"
-        onClicked: {
-            con.send();
-        }
-    }
-
-    LCARSButton {
-        id: sendTextButton
-        visible: con.connected
-        anchors.top: sendButton.bottom
-        anchors.topMargin: 5
-        text: "Send Text"
-        onClicked: {
-            con.sendText();
-        }
-    }
-
-    Text {
-        id: msg
-        text: con.message
-        anchors.left: connectButton.right;
-    }
-
-    Text {
-
-        anchors.left: connectButton.right;
-        anchors.top: msg.bottom
-        text: "Number of displays: " + con.displayCount;
-    }*/
-
-    ConnectionManager {
-        id: con
-    }
 
 }

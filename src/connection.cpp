@@ -13,6 +13,17 @@ connection::connection(QObject *parent) : QObject(parent)
     communicator.start();
 }
 
+connection::~connection()
+{
+
+}
+
+connection *connection::Instance()
+{
+    static connection* con = new connection;
+    return con;
+}
+
 void connection::setConnected(bool c)
 {
     if(c)

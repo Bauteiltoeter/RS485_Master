@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import Displaymaster.display 1.0
+import Displaymaster.connectionManager 1.0
 
 Panel {
     anchors.fill: parent
@@ -33,8 +34,8 @@ Panel {
         text: "Send"
 
         onClicked: {
-            con.writeText(area.text)
-            livedisplay.setContent(con.framebufferContent);
+            Con.writeText(area.text)
+            livedisplay.setContent(Con.framebufferContent);
         }
     }
 

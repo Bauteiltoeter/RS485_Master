@@ -19,6 +19,8 @@ class connection : public QObject
 
 public:
     explicit connection(QObject *parent = 0);
+    ~connection();
+    static connection* Instance();
 
     void setConnected(bool c);
     bool connected();

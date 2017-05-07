@@ -2,11 +2,18 @@ import QtQuick 2.0
 
 
 Item {
-    property string page: "connect"
+
 
     anchors.fill: parent
     property int barsize: 300
+    property string header: "Header"
+    property string footer: "Footer"
+
+    property int buttonsize: barsize*194.89/229.969
     property alias content: cont
+
+    property list<LCARSSiteButton> buttons;
+    property list<Item> contents;
     scale: 1
 
     Image {
@@ -16,7 +23,7 @@ Item {
         anchors.left: parent.left
         anchors.top: parent.top
 
-        width: 300
+        width: barsize
         height: 75
     }
 
@@ -28,12 +35,14 @@ Item {
         color: "#d06468"
 
         LCARSText {
-            text: "System display"
+            text:header
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             anchors.rightMargin: 10
         }
     }
+
+
 
     Grid {
         id: buttonGrid
@@ -44,45 +53,9 @@ Item {
         columns: 1
         spacing: 5
 
-        LCARSSiteButton {
-            width: parent.width + ( (page=="connect") ? 20 : 0)
-            text: con.connected ? "Disconnect" : "Connect"
 
-            onClicked: {
-                page = "connect"
-                con.connected=!con.connected;
-            }
-        }
+        children:  buttons;
 
-        LCARSSiteButton {
-            width: parent.width + ( (page=="freetext") ? 20 : 0)
-            visible: con.connected
-            anchors.topMargin: 5
-            text: "Free text"
-            onClicked: {
-                page="freetext" //con.sendText();
-            }
-        }
-
-        LCARSSiteButton {
-            width: parent.width + ( (page=="brightness") ? 20 : 0)
-            visible: con.connected
-            anchors.topMargin: 5
-            text: "Brightness"
-            onClicked: {
-                page="brightness"
-            }
-        }
-
-        LCARSSiteButton {
-            width: parent.width + ( (page=="content") ? 20 : 0)
-            visible: con.connected
-            anchors.topMargin: 5
-            text: "Dynamic content"
-            onClicked: {
-                page="content"
-            }
-        }
 
     }
 
@@ -93,21 +66,9 @@ Item {
         anchors.bottom: bottomleftcorner.top
         anchors.right: parent.right
 
-        FreeTextPanel {
-            visible: page==="freetext"
-        }
+        children: contents;
 
-        ConnectPanel {
-            visible: page==="connect"
-        }
 
-        BrightnessPanel {
-            visible: page==="brightness"
-        }
-
-        DynamicPanel {
-            visible: page==="content"
-        }
 
 
     }
@@ -131,7 +92,7 @@ Item {
         anchors.left: parent.left
         anchors.bottom: parent.bottom
 
-        width: 300
+        width: barsize
         height: 57
     }
 
@@ -144,7 +105,7 @@ Item {
         color: "#9898f5"
 
         LCARSText {
-            text: "V 0.0.1"
+            text: footer
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             anchors.rightMargin: 10

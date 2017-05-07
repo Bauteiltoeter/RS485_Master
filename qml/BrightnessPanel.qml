@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import Displaymaster.connectionManager 1.0
 
 
 Panel {
@@ -17,7 +18,7 @@ Panel {
 
 
         onValueChanged: {
-            con.setBrightness(value);
+            Con.setBrightness(value);
         }
 
     }
