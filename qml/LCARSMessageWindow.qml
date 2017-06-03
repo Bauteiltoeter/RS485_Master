@@ -24,6 +24,9 @@ Panel {
     }
 
     LCARSButton {
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 20
+        anchors.horizontalCenter: parent.horizontalCenter
         text: "OK"
         invert: !MessageController.isError
         onClicked: {

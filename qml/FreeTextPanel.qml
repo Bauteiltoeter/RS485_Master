@@ -32,6 +32,9 @@ Panel {
 
     LCARSButton {
         text: "Send"
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 20
 
         onClicked: {
             Con.writeText(area.text)
