@@ -4,34 +4,9 @@ Panel {
     anchors.fill: parent
     isBlue: true
 
-    Grid {
+
+    HostList {
         anchors.centerIn: parent
-
-        columns: 2
-        spacing: 10
-
-        LCARSText {
-            text: "Monitoring"
-            color: "#FFFF00"
-            font.pixelSize: 25
-        }
-        LCARSTextField {
-            text: "logic-craft.de"
-
-            font.pixelSize: 25
-        }
-        LCARSText {
-            text: "Monitoring"
-            color: "#FFFF00"
-            font.pixelSize: 25
-
-        }
-        LCARSTextField {
-            text: "acis-ingolstadt.de"
-
-            font.pixelSize: 25
-        }
     }
-
 
 }

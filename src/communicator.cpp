@@ -20,6 +20,11 @@ void Communicator::run()
 {
     while(1)
     {
+        msleep(100);
+        if(serial) serial->setDTR(true);
+        msleep(100);
+        if(serial) serial->setDTR(false);
+
         msleep(10);
 
         if(!newPackages.empty())

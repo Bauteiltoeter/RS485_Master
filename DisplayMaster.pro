@@ -10,11 +10,13 @@ SOURCES += src/main.cpp \
     src/segmentdisplay.cpp \
     src/display.cpp \
     src/communicator.cpp \
-    src/content/contentmanager.cpp \
-    src/content/contentbasic.cpp \
-    src/content/contentclock.cpp \
-    src/content/contentfinger.cpp \
-    src/content/contentmonitoring.cpp
+    src/contentmanager.cpp \
+    src/contentbasic.cpp \
+    src/contentclock.cpp \
+    src/contentfinger.cpp \
+    src/contentmonitoring.cpp \
+    src/qicmp.cpp \
+    src/monitoredhost.cpp
 
 RESOURCES += qml.qrc \
 		images.qrc
@@ -49,8 +51,10 @@ HEADERS += \
     src/segmentdisplay.h \
     src/display.h \
     src/communicator.h \
-    src/content/contentmanager.h \
-    src/content/contentbasic.h \
-    src/content/contentclock.h \
-    src/content/contentfinger.h \
-    src/content/contentmonitoring.h
+    src/contentmanager.h \
+    src/contentbasic.h \
+    src/contentclock.h \
+    src/contentfinger.h \
+    src/contentmonitoring.h \
+    src/qicmp.h \
+    src/monitoredhost.h

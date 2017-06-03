@@ -7,6 +7,7 @@
 #include <fcntl.h>      // File control definitions
 #include <errno.h>      // Error number definitions
 #include <termios.h>    // POSIX terminal control definition
+#include <sys/ioctl.h>
 
 SerialPort::SerialPort()
 {
@@ -118,4 +119,15 @@ bool SerialPort::isConnected()
         return false;
     else
         return true;
+}
+
+void SerialPort::setDTR(bool state)
+{
+    qDebug() << "SerialPort::setDtr(" << state << ")";
+    int DTR_flag;
+    DTR_flag = TIOCM_DTR;
+    if(state)
+        ioctl(USB,TIOCMBIS,&DTR_flag);//Set RTS pin
+    else
+        ioctl(USB,TIOCMBIC,&DTR_flag);
 }

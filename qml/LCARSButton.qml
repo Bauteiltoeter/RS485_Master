@@ -7,9 +7,9 @@ Panel {
 
     width: 200
     height: 50
-    anchors.bottom: parent.bottom
-    anchors.bottomMargin: 15
-    anchors.horizontalCenter: parent.horizontalCenter
+ //   anchors.bottom: parent.bottom
+ //   anchors.bottomMargin: 15
+ //   anchors.horizontalCenter: parent.horizontalCenter
     isBlue: invert ? !clickArea.pressed : clickArea.pressed
 
     LCARSText {

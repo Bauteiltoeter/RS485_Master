@@ -20,5 +20,6 @@
         <file>qml/ContentClock.qml</file>
         <file>qml/ContentFinger.qml</file>
         <file>qml/ContentMonitoring.qml</file>
+        <file>qml/HostList.qml</file>
     </qresource>
 </RCC>
