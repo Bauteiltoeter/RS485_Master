@@ -1,7 +1,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQuickView>
-#include "connection.h"
+#include "busmaster.h"
+#include "displayConnection.h"
 #include "messagecontroller.h"
 #include "display.h"
 #include "contentmanager.h"
@@ -32,8 +33,18 @@ static QObject* connection_singletontype_provider(QQmlEngine *engine, QJSEngine 
     Q_UNUSED(scriptEngine);
 
 
-    return connection::Instance();
+    return DisplayConnection::Instance();
 }
+
+static QObject* busmaster_singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+
+
+    return Busmaster::Instance();
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -52,7 +63,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<Display>("Displaymaster.display", 1, 0, "Display");
     qmlRegisterType<SegmentDisplay>("Displaymanager.segment",1,0,"Segment");
 
-    qmlRegisterSingletonType<connection>("Displaymaster.connectionManager",1,0,"Con", connection_singletontype_provider);
+    qmlRegisterSingletonType<DisplayConnection>("Displaymaster.connectionManager",1,0,"Con", connection_singletontype_provider);
+    qmlRegisterSingletonType<Busmaster>("Displaymaster.Busmaster",1,0,"Busmaster", busmaster_singletontype_provider);
     qmlRegisterSingletonType<MessageController>("Displaymaster.messageController",1,0,"MessageController", messageController_singletontype_provider);
     qmlRegisterSingletonType<ContentManager>("Displaymaster.contentManager",1,0,"ContentManager", contentManager_singletontype_provider);
 

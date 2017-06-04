@@ -7,7 +7,7 @@
 
 #include "contentclock.h"
 #include "contentfinger.h"
-#include "connection.h"
+#include "displayConnection.h"
 #include "contentmonitoring.h"
 
 ContentManager::ContentManager()
@@ -91,7 +91,7 @@ void ContentManager::stringTransmitRequest(int id, QStringList display)
     qDebug() << "StringTransmitRequest for id: " << id << ":\n" << display;
 
     if(id==currentFocus){
-        connection::Instance()->writeText(display);
+        DisplayConnection::Instance()->writeText(display);
     }
     else
     {

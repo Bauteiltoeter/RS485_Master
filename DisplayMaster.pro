@@ -3,20 +3,22 @@ QT += qml quick
 CONFIG += c++11
 
 SOURCES += src/main.cpp \
-    src/connection.cpp \
+    src/displayConnection.cpp \
     src/serialport.cpp \
     src/messagecontroller.cpp \
     src/message.cpp \
     src/segmentdisplay.cpp \
     src/display.cpp \
-    src/communicator.cpp \
     src/contentmanager.cpp \
     src/contentbasic.cpp \
     src/contentclock.cpp \
     src/contentfinger.cpp \
     src/contentmonitoring.cpp \
     src/qicmp.cpp \
-    src/monitoredhost.cpp
+    src/monitoredhost.cpp \
+    src/busmaster.cpp \
+    src/slavemanager.cpp \
+    src/basicslave.cpp
 
 RESOURCES += qml.qrc \
 		images.qrc
@@ -44,9 +46,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    src/connection.h \
     src/serialport.h \
     src/messagecontroller.h \
+    src/displayConnection.h \
     src/message.h \
     src/segmentdisplay.h \
     src/display.h \
@@ -57,4 +59,7 @@ HEADERS += \
     src/contentfinger.h \
     src/contentmonitoring.h \
     src/qicmp.h \
-    src/monitoredhost.h
+    src/monitoredhost.h \
+    src/busmaster.h \
+    src/slavemanager.h \
+    src/basicslave.h

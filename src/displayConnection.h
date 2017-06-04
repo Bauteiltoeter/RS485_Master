@@ -6,9 +6,9 @@
 #include <QByteArray>
 #include <QList>
 #include "serialport.h"
-#include "communicator.h"
+//#include "communicator.h"
 
-class connection : public QObject
+class DisplayConnection : public QObject
 {
 
 
@@ -18,9 +18,9 @@ class connection : public QObject
     Q_PROPERTY(QByteArray framebufferContent READ framebufferContent NOTIFY framebufferContentChanged)
 
 public:
-    explicit connection(QObject *parent = 0);
-    ~connection();
-    static connection* Instance();
+    explicit DisplayConnection(QObject *parent = 0);
+    ~DisplayConnection();
+    static DisplayConnection* Instance();
 
     void setConnected(bool c);
     bool connected();
@@ -50,9 +50,6 @@ public slots:
 private:
 
     void processStatemachine(uint8_t data);
-
-    Communicator communicator;
-
 
 
     int numberOfDisplays;

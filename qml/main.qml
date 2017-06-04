@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.0
 import Displaymaster.connectionManager 1.0
+import Displaymaster.Busmaster 1.0
 
 ApplicationWindow {
     visible: true
@@ -28,11 +29,12 @@ ApplicationWindow {
             LCARSSiteButton {
                 active: page=="connect" ? 20 : 0
                 defaultWidth: mainPanel.buttonsize
-                text: Con.connected ? "Disconnect" : "Connect"
+                text: "Connection"; //Busmaster.connected ? "Disconnect" : "Connect"
 
                 onClicked: {
                     page = "connect"
-                    Con.connected=!Con.connected;
+                    Busmaster.connect();
+                   // Con.connected=!Con.connected;
                 }
             },
 
