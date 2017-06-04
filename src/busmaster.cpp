@@ -10,6 +10,8 @@ Busmaster::Busmaster()
     serial=NULL;
     processing=NULL;
 
+    sm = SlaveManager::Instance();
+
 }
 
 Busmaster* Busmaster::Instance()
@@ -104,12 +106,28 @@ void Busmaster::run()
 {
     while(1)
     {
+        if(processing && processing->myTimer.elapsed() > 500)
+        {
+            qDebug() << "Timeout!";
+
+            switch(processing->type)
+            {
+
+                case Busaction::ID_INIT: MessageController::Instance()->addMessage(new Message(false, "No new slaves")); break;
+            }
+
+          //  delete processing;
+            processing=NULL;
+
+        }
+
         if(!incomingBytes.empty())
         {
             if(processing==NULL)
             {
                 MessageController::Instance()->addMessage(new Message(true, "Stray bytes on bus!"));
                 qDebug() << "Stray bytes on the bus!";
+                incomingBytes.clear();
             }
             else
             {
@@ -131,6 +149,8 @@ void Busmaster::run()
                             uint16_t hw_id = buffer[2]<<8 | buffer[3];
                             uint16_t checksum = buffer[4]<<8 | buffer[5];
 
+                            sm->createSlave(id,hw_id);
+
                             MessageController::Instance()->addMessage(new Message(false,"Detected new slave\n ID: " + QString::number(id) + "\nHardware ID: " + QString::number(hw_id)));
                             delete processing;
                             processing=NULL;
@@ -149,7 +169,8 @@ void Busmaster::run()
             qDebug() << "Oh stuff to do!";
 
             processing = actions.first();
-
+            actions.pop_front();
+            processing->myTimer.start();
             switch(processing->type)
             {
                 case Busaction::ID_INIT:

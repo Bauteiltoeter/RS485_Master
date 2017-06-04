@@ -33,7 +33,19 @@ ApplicationWindow {
 
                 onClicked: {
                     page = "connect"
-                    Busmaster.connect();
+
+                   // Con.connected=!Con.connected;
+                }
+            },
+
+            LCARSSiteButton {
+                active: page=="slaves" ? 20 : 0
+                defaultWidth: mainPanel.buttonsize
+                text: "Slaves"; //Busmaster.connected ? "Disconnect" : "Connect"
+
+                onClicked: {
+                    page = "slaves"
+                    //Busmaster.connect();
                    // Con.connected=!Con.connected;
                 }
             },
@@ -87,6 +99,11 @@ ApplicationWindow {
             FreeTextPanel {
                 visible: page==="freetext"
             },
+
+            SlavePanel {
+                visible: page==="slaves"
+            },
+
 
             ConnectPanel {
                 visible: page==="connect"

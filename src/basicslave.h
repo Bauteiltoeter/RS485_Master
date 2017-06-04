@@ -7,7 +7,14 @@ class BasicSlave : public QObject
 {
     Q_OBJECT
 public:
-    BasicSlave();
+    BasicSlave(uint16_t id, uint16_t hw_id);
+    virtual QString getName();
+
+    uint16_t getId();
+
+private:
+    uint16_t id;
+    uint16_t hw_id;
 };
 
 #endif // BASICSLAVE_H

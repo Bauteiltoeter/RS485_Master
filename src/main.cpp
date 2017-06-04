@@ -6,14 +6,13 @@
 #include "messagecontroller.h"
 #include "display.h"
 #include "contentmanager.h"
+#include "slavemanager.h"
 
 static QObject* messageController_singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
-
     MessageController tmp;
-
     return tmp.Instance();
 }
 
@@ -21,9 +20,7 @@ static QObject* contentManager_singletontype_provider(QQmlEngine *engine, QJSEng
 {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
-
     ContentManager tmp;
-
     return tmp.Instance();
 }
 
@@ -31,8 +28,6 @@ static QObject* connection_singletontype_provider(QQmlEngine *engine, QJSEngine 
 {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
-
-
     return DisplayConnection::Instance();
 }
 
@@ -40,9 +35,14 @@ static QObject* busmaster_singletontype_provider(QQmlEngine *engine, QJSEngine *
 {
     Q_UNUSED(engine);
     Q_UNUSED(scriptEngine);
-
-
     return Busmaster::Instance();
+}
+
+static QObject* slavemanager_singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine);
+    Q_UNUSED(scriptEngine);
+    return SlaveManager::Instance();
 }
 
 
@@ -67,6 +67,8 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<Busmaster>("Displaymaster.Busmaster",1,0,"Busmaster", busmaster_singletontype_provider);
     qmlRegisterSingletonType<MessageController>("Displaymaster.messageController",1,0,"MessageController", messageController_singletontype_provider);
     qmlRegisterSingletonType<ContentManager>("Displaymaster.contentManager",1,0,"ContentManager", contentManager_singletontype_provider);
+    qmlRegisterSingletonType<SlaveManager>("Displaymaster.SlaveManager",1,0,"SlaveManager", slavemanager_singletontype_provider);
+
 
 
 

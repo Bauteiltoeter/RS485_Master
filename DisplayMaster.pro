@@ -18,7 +18,8 @@ SOURCES += src/main.cpp \
     src/monitoredhost.cpp \
     src/busmaster.cpp \
     src/slavemanager.cpp \
-    src/basicslave.cpp
+    src/basicslave.cpp \
+    src/textdisplayslave.cpp
 
 RESOURCES += qml.qrc \
 		images.qrc
@@ -62,4 +63,5 @@ HEADERS += \
     src/monitoredhost.h \
     src/busmaster.h \
     src/slavemanager.h \
-    src/basicslave.h
+    src/basicslave.h \
+    src/textdisplayslave.h

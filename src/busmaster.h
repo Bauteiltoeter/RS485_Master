@@ -8,6 +8,7 @@
 #include <QTime>
 #include <time.h>
 #include <stdint.h>
+#include "slavemanager.h"
 
 #define TIMEOUT_MS 2
 
@@ -18,6 +19,7 @@ namespace Busaction {
 
     typedef struct {
         Action_type type;
+        QTime myTimer;
     } Busaction_t;
 }
 
@@ -48,6 +50,7 @@ private:
     QList<Busaction::Busaction_t*> actions;
     Busaction::Busaction_t* processing;
     QList<uint8_t> incomingBytes;
+    SlaveManager* sm;
 
 
 };

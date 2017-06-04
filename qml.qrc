@@ -21,5 +21,6 @@
         <file>qml/ContentFinger.qml</file>
         <file>qml/ContentMonitoring.qml</file>
         <file>qml/HostList.qml</file>
+        <file>qml/SlavePanel.qml</file>
     </qresource>
 </RCC>

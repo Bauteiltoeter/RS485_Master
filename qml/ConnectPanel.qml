@@ -7,11 +7,11 @@ Panel {
     isBlue: true
 
     LCARSButton {
-        text: "Search slaves"
+        text: "Connect"
         anchors.centerIn: parent
 
         onClicked: {
-            Busmaster.detectSlaves();
+            Busmaster.connect();
         }
     }
 }
