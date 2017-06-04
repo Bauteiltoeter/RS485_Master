@@ -15,3 +15,8 @@ uint16_t BasicSlave::getId()
 {
     return id;
 }
+
+uint16_t BasicSlave::getHwId()
+{
+    return hw_id;
+}

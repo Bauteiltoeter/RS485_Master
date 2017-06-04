@@ -11,6 +11,7 @@ public:
     virtual QString getName();
 
     uint16_t getId();
+    uint16_t getHwId();
 
 private:
     uint16_t id;

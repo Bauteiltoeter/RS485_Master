@@ -14,12 +14,27 @@
 
 namespace Busaction {
     typedef enum {
-        ID_INIT
+        ID_INIT,
+        TRANSMIT_MASTER_SLAVE,
+        TRANSMIT_SLAVE_MASTER
     } Action_type;
+
+    typedef void (*bus_callback_t)(void);
+
+    typedef struct {
+        uint16_t id;
+        uint16_t msg_id;
+        uint8_t length;
+        uint8_t* data;
+        uint16_t checksum; //zum vergleichen
+    } Transfer_data_t;
 
     typedef struct {
         Action_type type;
         QTime myTimer;
+        Transfer_data_t* transfer_data;
+        bus_callback_t error;
+        bus_callback_t success;
     } Busaction_t;
 }
 
@@ -33,6 +48,7 @@ public:
     static Busmaster* Instance();
     Q_INVOKABLE void connect();
     Q_INVOKABLE void detectSlaves();
+    Q_INVOKABLE void pingSlave();
 
 private slots:
     void serialError(QString msg);
@@ -42,6 +58,9 @@ private slots:
 private:
     uint16_t getFreeId();
     uint16_t calc_checksum(uint8_t* data, uint16_t length);
+    void transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t* data);
+    void transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t* data, Busaction::bus_callback_t success, Busaction::bus_callback_t error);
+    void clearProcessing();
     void setTransmit();
     void setReceive();
 

@@ -16,10 +16,23 @@ Panel {
     }
 
 
+    LCARSButton {
+        id: pingButton
+        text: "Ping slave"
+        anchors.centerIn: parent
+
+
+        onClicked: {
+            Busmaster.pingSlave();
+        }
+    }
+
 
     LCARSButton {
         text: "Search slaves"
-        anchors.centerIn: parent
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: pingButton.bottom;
+        anchors.topMargin: 30
 
         onClicked: {
             Busmaster.detectSlaves();

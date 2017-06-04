@@ -29,13 +29,15 @@ void Busmaster::connect()
     QObject::connect(serial,SIGNAL(connected()),this,SLOT(serialConnected()));
     QObject::connect(serial,SIGNAL(errorSignal(QString)),this,SLOT(serialError(QString)));
     QObject::connect(serial,SIGNAL(newData(uint8_t*,size_t)),SLOT(newSerialData(uint8_t*,size_t)));
-    serial->connect("/dev/ttyUSB0",B115200);
+    serial->connect("/dev/ttyUSB2",B115200);
 
     if(serial)
     {
         serial->start();
         setReceive();
         start();
+
+
     }
 }
 
@@ -45,8 +47,28 @@ void Busmaster::detectSlaves()
 
     Busaction::Busaction_t* tmp = new Busaction::Busaction_t;
     tmp->type=Busaction::ID_INIT;
+    tmp->transfer_data=NULL;
+    tmp->success=NULL;
+    tmp->error=NULL;
     actions.append(tmp);
 
+}
+
+void s(void)
+{
+    qDebug() << "Test success handler";
+}
+
+void e(void)
+{
+    qDebug() << "Test error handler";
+}
+
+void Busmaster::pingSlave()
+{
+    qDebug() << "Sending package!";
+    uint8_t* buffer= new uint8_t[20];
+    transmit_master_slave(43981,1,20,buffer,s,e);
 }
 
 void Busmaster::serialError(QString msg)
@@ -85,6 +107,26 @@ uint16_t Busmaster::calc_checksum(uint8_t *data, uint16_t length)
     return sum;
 }
 
+void Busmaster::transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t *data)
+{
+    transmit_master_slave(id,msg_id,length,data,NULL,NULL);
+}
+
+void Busmaster::transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t *data, Busaction::bus_callback_t success, Busaction::bus_callback_t error)
+{
+    Busaction::Busaction_t* tmp = new Busaction::Busaction_t;
+    tmp->type=Busaction::TRANSMIT_MASTER_SLAVE;
+    tmp->transfer_data= new Busaction::Transfer_data_t;
+
+    tmp->transfer_data->data= data;
+    tmp->transfer_data->id = id;
+    tmp->transfer_data->length = length;
+    tmp->transfer_data->msg_id = msg_id;
+    tmp->error=error;
+    tmp->success=success;
+    actions.append(tmp);
+}
+
 void Busmaster::setTransmit()
 {
     qDebug() << "Setting DTR high";
@@ -100,7 +142,17 @@ void Busmaster::setReceive()
         serial->setDTR(false);
 }
 
+void Busmaster::clearProcessing()
+{
+    if(processing)
+    {
+        if(processing->transfer_data)
+            delete processing->transfer_data;
+        delete processing;
+    }
 
+    processing=NULL;
+}
 
 void Busmaster::run()
 {
@@ -112,12 +164,16 @@ void Busmaster::run()
 
             switch(processing->type)
             {
-
                 case Busaction::ID_INIT: MessageController::Instance()->addMessage(new Message(false, "No new slaves")); break;
+                case Busaction::TRANSMIT_MASTER_SLAVE: MessageController::Instance()->addMessage((new Message(true,"Slave does not responde"))); break;
             }
 
-          //  delete processing;
-            processing=NULL;
+            if(processing->error)
+                processing->error();
+
+
+
+            clearProcessing();
 
         }
 
@@ -152,11 +208,40 @@ void Busmaster::run()
                             sm->createSlave(id,hw_id);
 
                             MessageController::Instance()->addMessage(new Message(false,"Detected new slave\n ID: " + QString::number(id) + "\nHardware ID: " + QString::number(hw_id)));
-                            delete processing;
-                            processing=NULL;
+                            if(processing->success)
+                                processing->success();
 
+                            clearProcessing();
                         }
 
+                    break;
+
+                    case Busaction::TRANSMIT_MASTER_SLAVE:
+                        if(incomingBytes.size()>=3)
+                        {
+                            uint8_t buffer[3];
+                            for(int i=0; i < 3; i++)
+                            {
+                                buffer[i] = incomingBytes.first();
+                                incomingBytes.removeFirst();
+                            }
+
+                            uint16_t checksum = buffer[1]<<8|buffer[2];
+
+                            if (buffer[0] != 0xAA || checksum!=processing->transfer_data->checksum)
+                            {
+                                MessageController::Instance()->addMessage(new Message(true,"Checksum error"));
+                                if(processing->error)
+                                    processing->error();
+                            }
+                            else
+                            {
+                                if(processing->success)
+                                    processing->success();
+                            }
+                            clearProcessing();
+
+                        }
                     break;
                 }
             }
@@ -174,6 +259,7 @@ void Busmaster::run()
             switch(processing->type)
             {
                 case Busaction::ID_INIT:
+                {
                     uint8_t buffer[5];
                     buffer[0] = 0xAA;
                     buffer[1] = 0xFF;
@@ -185,6 +271,30 @@ void Busmaster::run()
                     setTransmit();
                     serial->writeBytes(buffer,5);
                     setReceive();
+                }
+                break;
+
+                case Busaction::TRANSMIT_MASTER_SLAVE:
+                {
+                    qDebug() << "Sending master->slave bytes";
+                    uint8_t buffer[12 + processing->transfer_data->length];
+                    buffer[0] = 0xAA;
+                    buffer[1] = processing->transfer_data->id>>8;
+                    buffer[2] = processing->transfer_data->id;
+                    buffer[3] = processing->transfer_data->msg_id>>8;
+                    buffer[4] = processing->transfer_data->msg_id;
+                    buffer[5] = 0x01; //master->slave transmit
+                    buffer[6] = processing->transfer_data->length;
+                    if(processing->transfer_data->length>0)
+                        memcpy(&buffer[7],processing->transfer_data->data,processing->transfer_data->length);
+                    processing->transfer_data->checksum= calc_checksum(buffer,6+processing->transfer_data->length);
+                    buffer[7+processing->transfer_data->length] = processing->transfer_data->checksum>>8;
+                    buffer[8+processing->transfer_data->length] = processing->transfer_data->checksum;
+
+                    setTransmit();
+                    serial->writeBytes(buffer,9+processing->transfer_data->length);
+                    setReceive();
+                }
                 break;
             }
 

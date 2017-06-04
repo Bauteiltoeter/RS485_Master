@@ -34,6 +34,13 @@ Panel {
         }
     }
 
+     Keys.onPressed: {
+         console.log("test");
+          if (event.key == Qt.Key_Enter) {
+              event.accepted = true;
+              MessageController.messageBoxClosed();
+          }
+     }
 
 
 

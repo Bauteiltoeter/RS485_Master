@@ -23,12 +23,15 @@ signals:
     void slaveNamesChanged();
 
 private:
-    void loadSlaves(QString file);
+    void loadSlaves(QString filename);
+    void saveSlaves(QString filename);
     void processSlaves();
     void processSlave();
     QString readNextText();
     QVector<BasicSlave*> knownSlaves;
     QXmlStreamReader xml;
+
+    QString slave_filename;
 };
 
 #endif // SLAVEMANAGER_H

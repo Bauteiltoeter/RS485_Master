@@ -12,7 +12,9 @@ typedef enum  {
 
 SlaveManager::SlaveManager()
 {
-    loadSlaves("slaves.xml");
+    slave_filename = "slaves.xml";
+
+    loadSlaves(slave_filename);
 }
 
 SlaveManager* SlaveManager::Instance()
@@ -36,6 +38,7 @@ void SlaveManager::createSlave(uint16_t id, uint16_t hw_id)
         qDebug() << "Added slave to list";
         knownSlaves.append(newSlave);
         emit slaveNamesChanged();
+        saveSlaves(slave_filename);
     }
 }
 
@@ -51,9 +54,9 @@ QString SlaveManager::slaveNames()
     return names;
 }
 
-void SlaveManager::loadSlaves(QString file)
+void SlaveManager::loadSlaves(QString filename)
 {
-    QFile xmlFile(file);
+    QFile xmlFile(filename);
       xmlFile.open(QIODevice::ReadOnly);
       xml.setDevice(&xmlFile);
 
@@ -72,6 +75,29 @@ void SlaveManager::loadSlaves(QString file)
       }
 
 
+}
+
+void SlaveManager::saveSlaves(QString filename)
+{
+    QFile file(filename);
+
+    file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
+
+     QTextStream stream( &file );
+
+     stream << "<slaves>\n";
+
+     foreach(auto slave, knownSlaves)
+     {
+
+         stream << " <slave>\n  <id>" << QString::number(slave->getId()) << "</id>\n  <hw>" << QString::number(slave->getHwId()) << "</hw>\n </slave>\n";
+
+
+         //names.append(""+ QString::number(slave->getId()) + ": " + slave->getName()) +"\n\n";
+     }
+
+     stream << "</slaves>";
+    file.close();
 }
 
 void SlaveManager::processSlaves()
