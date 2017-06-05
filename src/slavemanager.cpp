@@ -3,6 +3,7 @@
 #include "textdisplayslave.h"
 #include "message.h"
 #include "messagecontroller.h"
+#include "busmaster.h"
 #include <QFile>
 #include <QDebug>
 
@@ -13,6 +14,7 @@ typedef enum  {
 SlaveManager::SlaveManager()
 {
     slave_filename = "slaves.xml";
+    qmlEngine=NULL;
 
     loadSlaves(slave_filename);
 }
@@ -42,6 +44,20 @@ void SlaveManager::createSlave(uint16_t id, uint16_t hw_id)
     }
 }
 
+void SlaveManager::connected()
+{
+    qDebug() << "Pinging all slaves";
+    connect(Busmaster::Instance(),SIGNAL(transmitError(int)),this,SLOT(transmitError(int)));
+    connect(Busmaster::Instance(),SIGNAL(transmitSuccess(int)),this,SLOT(transmitSuccess(int)));
+
+    foreach(BasicSlave* slave, knownSlaves)
+    {
+        uint16_t t_id = Busmaster::Instance()->pingSlave(slave->getId());
+
+        pingMap[t_id] = slave;
+    }
+}
+
 QString SlaveManager::slaveNames()
 {
     QString names="";
@@ -52,6 +68,88 @@ QString SlaveManager::slaveNames()
     }
 
     return names;
+}
+
+void SlaveManager::setQmlEngine(QQmlApplicationEngine *engine)
+{
+    this->qmlEngine=engine;
+
+}
+
+void SlaveManager::loadGUI()
+{
+    static bool loaded=false;
+
+    if(qmlEngine && !loaded)
+    {
+        foreach(BasicSlave* slave, knownSlaves)
+        {
+            slave->initGUI(qmlEngine);
+        }
+
+        if(!qmlEngine->rootObjects().isEmpty())
+            loaded=true;
+    }
+}
+
+void SlaveManager::pingSlave()
+{
+    BasicSlave* selected = getSelected();
+
+    if(selected)
+    {
+
+        int t_id = Busmaster::Instance()->pingSlave(selected->getId());
+        pingMap[t_id]=selected;
+    }
+    else
+    {
+        qDebug() << "Nothing selected";
+    }
+}
+
+void SlaveManager::resetSlaveID()
+{
+
+}
+
+void SlaveManager::removeSlave()
+{
+
+}
+
+BasicSlave *SlaveManager::getSelected()
+{
+    foreach(BasicSlave* slave, knownSlaves)
+    {
+        if(slave->isSelected())
+            return slave;
+    }
+    return NULL;
+}
+
+void SlaveManager::transmitSuccess(int t_id)
+{
+    BasicSlave* t = pingMap[t_id];
+
+    if(t)
+    {
+        t->setStatus(Slavestatus::RESPONSIVE);
+        qDebug() << "TransmitSuccess: " << t_id << t  ->getName();
+    }
+}
+
+void SlaveManager::transmitError(int t_id)
+{
+
+    BasicSlave* t = pingMap[t_id];
+
+    if(t)
+    {
+        t->setStatus(Slavestatus::DEAD);
+        MessageController::Instance()->addMessage(new Message(true,"Slave not responding\n"+ t->getName() +" ID:" + QString::number(t->getId())));
+        qDebug() << "TransmitError: " << t_id << t  ->getName();
+    }
 }
 
 void SlaveManager::loadSlaves(QString filename)
@@ -73,8 +171,6 @@ void SlaveManager::loadSlaves(QString filename)
           xml.raiseError();
          // qDebug() << errorString();
       }
-
-
 }
 
 void SlaveManager::saveSlaves(QString filename)

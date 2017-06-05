@@ -22,5 +22,6 @@
         <file>qml/ContentMonitoring.qml</file>
         <file>qml/HostList.qml</file>
         <file>qml/SlavePanel.qml</file>
+        <file>qml/LCARSSelectableText.qml</file>
     </qresource>
 </RCC>

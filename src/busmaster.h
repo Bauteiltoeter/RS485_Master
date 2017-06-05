@@ -19,8 +19,6 @@ namespace Busaction {
         TRANSMIT_SLAVE_MASTER
     } Action_type;
 
-    typedef void (*bus_callback_t)(void);
-
     typedef struct {
         uint16_t id;
         uint16_t msg_id;
@@ -32,9 +30,8 @@ namespace Busaction {
     typedef struct {
         Action_type type;
         QTime myTimer;
+        int t_id;
         Transfer_data_t* transfer_data;
-        bus_callback_t error;
-        bus_callback_t success;
     } Busaction_t;
 }
 
@@ -47,19 +44,22 @@ public:
     void run();
     static Busmaster* Instance();
     Q_INVOKABLE void connect();
-    Q_INVOKABLE void detectSlaves();
-    Q_INVOKABLE void pingSlave();
+    Q_INVOKABLE int detectSlaves();
+    Q_INVOKABLE int pingSlave(uint16_t slave_id);
 
 private slots:
     void serialError(QString msg);
     void serialConnected();
     void newSerialData(uint8_t* data, size_t length);
 
+signals:
+    void transmitSuccess(int t_id);
+    void transmitError(int t_id);
+
 private:
     uint16_t getFreeId();
     uint16_t calc_checksum(uint8_t* data, uint16_t length);
-    void transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t* data);
-    void transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t* data, Busaction::bus_callback_t success, Busaction::bus_callback_t error);
+    int transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t* data);
     void clearProcessing();
     void setTransmit();
     void setReceive();
@@ -70,7 +70,7 @@ private:
     Busaction::Busaction_t* processing;
     QList<uint8_t> incomingBytes;
     SlaveManager* sm;
-
+    int transmit_id;
 
 };
 

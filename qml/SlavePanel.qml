@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.Controls 1.4
 import Displaymaster.Busmaster 1.0
 import Displaymaster.SlaveManager 1.0
 
@@ -6,36 +7,81 @@ Panel {
     anchors.fill: parent
     isBlue: true
 
-    LCARSText {
+    onVisibleChanged: SlaveManager.loadGUI()
+
+
+    Grid {
+        id: slaveList
+        objectName: "slaveList"
+
         anchors.left: parent.left
-        anchors.leftMargin: 40
+        anchors.leftMargin: 60
         anchors.top: parent.top
         anchors.topMargin: 40
-        color: "#FFFF00"
-        text: SlaveManager.slaveNames
-    }
+
+        columns: 1
+        spacing: 5
 
 
-    LCARSButton {
-        id: pingButton
-        text: "Ping slave"
-        anchors.centerIn: parent
+        ExclusiveGroup {
+            id: radioInputGroup
 
-
-        onClicked: {
-            Busmaster.pingSlave();
         }
+
+
+
+
+       /*    LCARSSelectableText {
+
+
+                text: "fuck it"
+                exclusiveGroup: radioInputGroup
+            }*/
+
+
+
+
+
     }
 
 
-    LCARSButton {
-        text: "Search slaves"
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: pingButton.bottom;
-        anchors.topMargin: 30
 
-        onClicked: {
-            Busmaster.detectSlaves();
+
+    Grid {
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 30
+        spacing: 5
+        rows: 1
+
+        LCARSButton {
+            text: "Ping slave"
+            invert: true
+            onClicked: {
+                SlaveManager.pingSlave();
+            }
+        }
+
+        LCARSButton {
+            text: "Search slaves"
+            invert: true
+            onClicked: {
+                Busmaster.detectSlaves();
+            }
+        }
+
+        LCARSButton {
+            text: "Reset ID"
+            onClicked: {
+                SlaveManager.resetSlaveID();
+            }
+        }
+
+        LCARSButton {
+            text: "Remove slave"
+            onClicked: {
+                SlaveManager.removeSlave();
+            }
         }
     }
 }

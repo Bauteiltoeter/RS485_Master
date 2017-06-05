@@ -55,8 +55,6 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
 
-    ContentManager::Instance()->setQmlEngine(&engine);
-
 
     qRegisterMetaType<size_t>("size_t");
    // qmlRegisterType<connection>("Displaymaster.connectionManager", 1, 0, "ConnectionManager");
@@ -70,6 +68,8 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<SlaveManager>("Displaymaster.SlaveManager",1,0,"SlaveManager", slavemanager_singletontype_provider);
 
 
+    ContentManager::Instance()->setQmlEngine(&engine);
+    SlaveManager::Instance()->setQmlEngine(&engine);
 
 
    // qmlRegisterType<MessageController>("Displaymaster.messageController", 1, 0, "MessageController");

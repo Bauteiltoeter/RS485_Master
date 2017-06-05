@@ -4,7 +4,9 @@
 #include <QObject>
 #include <QVector>
 #include <QString>
+#include <QMap>
 #include <QXmlStreamReader>
+#include <QQmlApplicationEngine>
 #include "basicslave.h"
 
 class SlaveManager : public QObject
@@ -17,7 +19,17 @@ public:
     static SlaveManager* Instance();
 
     void createSlave(uint16_t id, uint16_t hw_id);
+    void connected();
     QString slaveNames();
+    void setQmlEngine(QQmlApplicationEngine* engine);
+    Q_INVOKABLE void loadGUI();
+    Q_INVOKABLE void pingSlave();
+    Q_INVOKABLE void resetSlaveID();
+    Q_INVOKABLE void removeSlave();
+
+private slots:
+    void transmitSuccess(int t_id);
+    void transmitError(int t_id);
 
 signals:
     void slaveNamesChanged();
@@ -27,11 +39,14 @@ private:
     void saveSlaves(QString filename);
     void processSlaves();
     void processSlave();
+    BasicSlave *getSelected();
     QString readNextText();
     QVector<BasicSlave*> knownSlaves;
     QXmlStreamReader xml;
 
     QString slave_filename;
+    QMap<int, BasicSlave*> pingMap;
+    QQmlApplicationEngine* qmlEngine;
 };
 
 #endif // SLAVEMANAGER_H

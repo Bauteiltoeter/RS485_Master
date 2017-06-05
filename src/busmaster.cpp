@@ -11,7 +11,7 @@ Busmaster::Busmaster()
     processing=NULL;
 
     sm = SlaveManager::Instance();
-
+    transmit_id=0;
 }
 
 Busmaster* Busmaster::Instance()
@@ -29,46 +29,34 @@ void Busmaster::connect()
     QObject::connect(serial,SIGNAL(connected()),this,SLOT(serialConnected()));
     QObject::connect(serial,SIGNAL(errorSignal(QString)),this,SLOT(serialError(QString)));
     QObject::connect(serial,SIGNAL(newData(uint8_t*,size_t)),SLOT(newSerialData(uint8_t*,size_t)));
-    serial->connect("/dev/ttyUSB2",B115200);
+    serial->connect("/dev/ttyUSB1",B115200);
 
     if(serial)
     {
         serial->start();
         setReceive();
         start();
+        sm->connected();
 
 
     }
 }
 
-void Busmaster::detectSlaves()
+int Busmaster::detectSlaves()
 {
     qDebug() << "Searching for slaves";
 
     Busaction::Busaction_t* tmp = new Busaction::Busaction_t;
     tmp->type=Busaction::ID_INIT;
     tmp->transfer_data=NULL;
-    tmp->success=NULL;
-    tmp->error=NULL;
+    tmp->t_id=transmit_id++;
     actions.append(tmp);
-
+    return tmp->t_id;
 }
 
-void s(void)
+int Busmaster::pingSlave(uint16_t slave_id)
 {
-    qDebug() << "Test success handler";
-}
-
-void e(void)
-{
-    qDebug() << "Test error handler";
-}
-
-void Busmaster::pingSlave()
-{
-    qDebug() << "Sending package!";
-    uint8_t* buffer= new uint8_t[20];
-    transmit_master_slave(43981,1,20,buffer,s,e);
+    return transmit_master_slave(slave_id,1,0,NULL);
 }
 
 void Busmaster::serialError(QString msg)
@@ -107,24 +95,21 @@ uint16_t Busmaster::calc_checksum(uint8_t *data, uint16_t length)
     return sum;
 }
 
-void Busmaster::transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t *data)
-{
-    transmit_master_slave(id,msg_id,length,data,NULL,NULL);
-}
-
-void Busmaster::transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t *data, Busaction::bus_callback_t success, Busaction::bus_callback_t error)
+int Busmaster::transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t *data)
 {
     Busaction::Busaction_t* tmp = new Busaction::Busaction_t;
     tmp->type=Busaction::TRANSMIT_MASTER_SLAVE;
+    tmp->t_id=transmit_id++;
+
     tmp->transfer_data= new Busaction::Transfer_data_t;
 
     tmp->transfer_data->data= data;
     tmp->transfer_data->id = id;
     tmp->transfer_data->length = length;
     tmp->transfer_data->msg_id = msg_id;
-    tmp->error=error;
-    tmp->success=success;
     actions.append(tmp);
+
+    return tmp->t_id;
 }
 
 void Busmaster::setTransmit()
@@ -165,12 +150,10 @@ void Busmaster::run()
             switch(processing->type)
             {
                 case Busaction::ID_INIT: MessageController::Instance()->addMessage(new Message(false, "No new slaves")); break;
-                case Busaction::TRANSMIT_MASTER_SLAVE: MessageController::Instance()->addMessage((new Message(true,"Slave does not responde"))); break;
+                case Busaction::TRANSMIT_MASTER_SLAVE: /*MessageController::Instance()->addMessage((new Message(true,"Slave does not responde"))); */break;
             }
 
-            if(processing->error)
-                processing->error();
-
+            emit transmitError(processing->t_id);
 
 
             clearProcessing();
@@ -208,9 +191,7 @@ void Busmaster::run()
                             sm->createSlave(id,hw_id);
 
                             MessageController::Instance()->addMessage(new Message(false,"Detected new slave\n ID: " + QString::number(id) + "\nHardware ID: " + QString::number(hw_id)));
-                            if(processing->success)
-                                processing->success();
-
+                            emit transmitSuccess(processing->t_id);
                             clearProcessing();
                         }
 
@@ -231,13 +212,11 @@ void Busmaster::run()
                             if (buffer[0] != 0xAA || checksum!=processing->transfer_data->checksum)
                             {
                                 MessageController::Instance()->addMessage(new Message(true,"Checksum error"));
-                                if(processing->error)
-                                    processing->error();
+                                emit transmitError(processing->t_id);
                             }
                             else
                             {
-                                if(processing->success)
-                                    processing->success();
+                                emit transmitSuccess(processing->t_id);
                             }
                             clearProcessing();
 
