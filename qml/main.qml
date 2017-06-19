@@ -51,17 +51,6 @@ ApplicationWindow {
             },
 
             LCARSSiteButton {
-                active: page=="freetext" ? 20 : 0
-                defaultWidth: mainPanel.buttonsize
-                visible: Con.connected
-                anchors.topMargin: 5
-                text: "Free text"
-                onClicked: {
-                    page="freetext" //con.sendText();
-                }
-            },
-
-            LCARSSiteButton {
                 active: page=="brightness" ? 20 : 0
                 defaultWidth: mainPanel.buttonsize
                 visible: Con.connected
@@ -96,9 +85,7 @@ ApplicationWindow {
         ]
 
         contents: [
-            FreeTextPanel {
-                visible: page==="freetext"
-            },
+
 
             SlavePanel {
                 visible: page==="slaves"

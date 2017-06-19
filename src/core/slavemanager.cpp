@@ -76,6 +76,13 @@ void SlaveManager::setQmlEngine(QQmlApplicationEngine *engine)
 
 }
 
+uint16_t SlaveManager::getNextFreeId()
+{
+    uint16_t tmp = nextFreeId;
+    nextFreeId++;
+    return tmp;
+}
+
 void SlaveManager::loadGUI()
 {
     static bool loaded=false;
@@ -154,23 +161,32 @@ void SlaveManager::transmitError(int t_id)
 
 void SlaveManager::loadSlaves(QString filename)
 {
+    qDebug() << "loading Slaves";
+
     QFile xmlFile(filename);
-      xmlFile.open(QIODevice::ReadOnly);
-      xml.setDevice(&xmlFile);
+    xmlFile.open(QIODevice::ReadOnly);
+    xml.setDevice(&xmlFile);
 
-      if (xml.readNextStartElement() && xml.name() == "slaves")
-         processSlaves();
+    if (xml.readNextStartElement() && xml.name() == "slaves")
+        processSlaves();
+    else if(xml.name() == "nextId")
+    {
+        nextFreeId = readNextText().toInt();
+    }
 
-      // readNextStartElement() leaves the stream in
-      // an invalid state at the end. A single readNext()
-      // will advance us to EndDocument.
-      if (xml.tokenType() == QXmlStreamReader::Invalid)
-          xml.readNext();
 
-      if (xml.hasError()) {
-          xml.raiseError();
-         // qDebug() << errorString();
-      }
+
+    // readNextStartElement() leaves the stream in
+    // an invalid state at the end. A single readNext()
+    // will advance us to EndDocument.
+    if (xml.tokenType() == QXmlStreamReader::Invalid)
+        xml.readNext();
+
+    if (xml.hasError())
+    {
+        xml.raiseError();
+        // qDebug() << errorString();
+    }
 }
 
 void SlaveManager::saveSlaves(QString filename)

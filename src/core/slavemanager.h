@@ -22,6 +22,7 @@ public:
     void connected();
     QString slaveNames();
     void setQmlEngine(QQmlApplicationEngine* engine);
+    uint16_t getNextFreeId();
     Q_INVOKABLE void loadGUI();
     Q_INVOKABLE void pingSlave();
     Q_INVOKABLE void resetSlaveID();
@@ -47,6 +48,8 @@ private:
     QString slave_filename;
     QMap<int, BasicSlave*> pingMap;
     QQmlApplicationEngine* qmlEngine;
+
+    uint16_t nextFreeId;
 };
 
 #endif // SLAVEMANAGER_H

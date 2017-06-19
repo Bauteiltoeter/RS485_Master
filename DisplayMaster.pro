@@ -3,23 +3,23 @@ QT += qml quick
 CONFIG += c++11
 
 SOURCES += src/main.cpp \
-    src/displayConnection.cpp \
-    src/serialport.cpp \
-    src/messagecontroller.cpp \
-    src/message.cpp \
-    src/segmentdisplay.cpp \
-    src/display.cpp \
-    src/contentmanager.cpp \
-    src/contentbasic.cpp \
-    src/contentclock.cpp \
-    src/contentfinger.cpp \
-    src/contentmonitoring.cpp \
-    src/qicmp.cpp \
-    src/monitoredhost.cpp \
-    src/busmaster.cpp \
-    src/slavemanager.cpp \
-    src/basicslave.cpp \
-    src/textdisplayslave.cpp
+    src/slavedrivers/textdisplay/displayConnection.cpp \
+    src/core/serialport.cpp \
+    src/core/messagecontroller.cpp \
+    src/core/message.cpp \
+    src/slavedrivers/textdisplay/segmentdisplay.cpp \
+    src/slavedrivers/textdisplay/display.cpp \
+    src/slavedrivers/textdisplay/contentmanager.cpp \
+    src/slavedrivers/textdisplay/contentbasic.cpp \
+    src/slavedrivers/textdisplay/contentclock.cpp \
+    src/slavedrivers/textdisplay/contentfinger.cpp \
+    src/slavedrivers/textdisplay/contentmonitoring.cpp \
+    src/slavedrivers/textdisplay/qicmp.cpp \
+    src/slavedrivers/textdisplay/monitoredhost.cpp \
+    src/core/busmaster.cpp \
+    src/core/slavemanager.cpp \
+    src/core/basicslave.cpp \
+    src/slavedrivers/textdisplay//textdisplayslave.cpp
 
 RESOURCES += qml.qrc \
 		images.qrc
@@ -46,22 +46,23 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
+INCLUDEPATH += src src/core/ src/slavedrivers/textdisplay/
 HEADERS += \
-    src/serialport.h \
-    src/messagecontroller.h \
-    src/displayConnection.h \
-    src/message.h \
-    src/segmentdisplay.h \
-    src/display.h \
-    src/communicator.h \
-    src/contentmanager.h \
-    src/contentbasic.h \
-    src/contentclock.h \
-    src/contentfinger.h \
-    src/contentmonitoring.h \
-    src/qicmp.h \
-    src/monitoredhost.h \
-    src/busmaster.h \
-    src/slavemanager.h \
-    src/basicslave.h \
-    src/textdisplayslave.h
+    src/core/serialport.h \
+    src/core/messagecontroller.h \
+    src/slavedrivers/textdisplay/displayConnection.h \
+    src/core/message.h \
+    src/slavedrivers/textdisplay/segmentdisplay.h \
+    src/slavedrivers/textdisplay/display.h \
+    src/slavedrivers/textdisplay/communicator.h \
+    src/slavedrivers/textdisplay/contentmanager.h \
+    src/slavedrivers/textdisplay/contentbasic.h \
+    src/slavedrivers/textdisplay/contentclock.h \
+    src/slavedrivers/textdisplay/contentfinger.h \
+    src/slavedrivers/textdisplay/contentmonitoring.h \
+    src/slavedrivers/textdisplay/qicmp.h \
+    src/slavedrivers/textdisplay/monitoredhost.h \
+    src/core/busmaster.h \
+    src/core/slavemanager.h \
+    src/core/basicslave.h \
+    src/slavedrivers/textdisplay/textdisplayslave.h

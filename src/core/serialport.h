@@ -2,7 +2,7 @@
 #define SERIALPORT_H
 
 #include <QObject>
-#include<QThread>
+#include <QThread>
 #include <termios.h>
 
 class SerialPort : public QThread

@@ -29,7 +29,7 @@ void Busmaster::connect()
     QObject::connect(serial,SIGNAL(connected()),this,SLOT(serialConnected()));
     QObject::connect(serial,SIGNAL(errorSignal(QString)),this,SLOT(serialError(QString)));
     QObject::connect(serial,SIGNAL(newData(uint8_t*,size_t)),SLOT(newSerialData(uint8_t*,size_t)));
-    serial->connect("/dev/ttyUSB1",B115200);
+    serial->connect("/dev/ttyUSB0",B115200);
 
     if(serial)
     {
@@ -80,7 +80,7 @@ void Busmaster::newSerialData(uint8_t *data, size_t length)
 
 uint16_t Busmaster::getFreeId()
 {
-    return 0xABCD;
+    return sm->getNextFreeId();
 }
 
 uint16_t Busmaster::calc_checksum(uint8_t *data, uint16_t length)
