@@ -1,4 +1,4 @@
-QT += qml quick
+QT += qml quick widgets
 
 CONFIG += c++11
 
@@ -11,15 +11,18 @@ SOURCES += src/main.cpp \
     src/slavedrivers/textdisplay/display.cpp \
     src/slavedrivers/textdisplay/contentmanager.cpp \
     src/slavedrivers/textdisplay/contentbasic.cpp \
+    src/slavedrivers/textdisplay/contentFreetext.cpp \
     src/slavedrivers/textdisplay/contentclock.cpp \
     src/slavedrivers/textdisplay/contentfinger.cpp \
     src/slavedrivers/textdisplay/contentmonitoring.cpp \
+    src/slavedrivers/textdisplay/contentpowermeter.cpp \
     src/slavedrivers/textdisplay/qicmp.cpp \
     src/slavedrivers/textdisplay/monitoredhost.cpp \
     src/core/busmaster.cpp \
     src/core/slavemanager.cpp \
     src/core/basicslave.cpp \
-    src/slavedrivers/textdisplay//textdisplayslave.cpp
+    src/slavedrivers/textdisplay/textdisplayslave.cpp \
+    src/slavedrivers/powermeter/powermeterslave.cpp
 
 RESOURCES += qml.qrc \
 		images.qrc
@@ -46,7 +49,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-INCLUDEPATH += src src/core/ src/slavedrivers/textdisplay/
+INCLUDEPATH += src src/core/ src/slavedrivers/textdisplay/ src/slavedrivers/powermeter
 HEADERS += \
     src/core/serialport.h \
     src/core/messagecontroller.h \
@@ -57,12 +60,15 @@ HEADERS += \
     src/slavedrivers/textdisplay/communicator.h \
     src/slavedrivers/textdisplay/contentmanager.h \
     src/slavedrivers/textdisplay/contentbasic.h \
+    src/slavedrivers/textdisplay/contentFreetext.h \
     src/slavedrivers/textdisplay/contentclock.h \
     src/slavedrivers/textdisplay/contentfinger.h \
     src/slavedrivers/textdisplay/contentmonitoring.h \
+    src/slavedrivers/textdisplay/contentpowermeter.h \
     src/slavedrivers/textdisplay/qicmp.h \
     src/slavedrivers/textdisplay/monitoredhost.h \
     src/core/busmaster.h \
     src/core/slavemanager.h \
     src/core/basicslave.h \
-    src/slavedrivers/textdisplay/textdisplayslave.h
+    src/slavedrivers/textdisplay/textdisplayslave.h \
+    src/slavedrivers/powermeter/powermeterslave.h

@@ -6,7 +6,9 @@
 #include <QList>
 
 #include "contentclock.h"
+#include "contentFreetext.h"
 #include "contentfinger.h"
+#include "contentpowermeter.h"
 #include "displayConnection.h"
 #include "contentmonitoring.h"
 
@@ -30,7 +32,8 @@ void ContentManager::setQmlEngine(QQmlApplicationEngine *qmlEngine)
     contentList.append(new ContentClock(0,qmlEngine));
     contentList.append(new ContentFinger(1,qmlEngine));
     contentList.append(new ContentMonitoring(2,qmlEngine));
-
+    contentList.append(new ContentFreetext(3,qmlEngine));
+    contentList.append(new ContentPowermeter(4,qmlEngine));
 
     for(int i=0; i < contentList.size(); i++)
     {
@@ -65,6 +68,21 @@ void ContentManager::visibleChanged(bool visible)
     }
 }
 
+QString ContentManager::headerText()
+{
+    if(currentFocus>=0 && currentFocus<contentList.size())
+        return contentList[currentFocus]->headerText();
+
+    return "NIX";
+}
+
+QString ContentManager::footerText()
+{
+    if(currentFocus>=0 && currentFocus<contentList.size())
+        return contentList[currentFocus]->footerText();
+    return "NIX";
+}
+
 void ContentManager::focusRequest(int contentID)
 {
     qDebug() << "focusRequest for id: " << contentID;
@@ -84,6 +102,8 @@ void ContentManager::focusRequest(int contentID)
         }
     }
     currentFocus=contentID;
+    emit headerTextChanged();
+    emit footerTextChanged();
 }
 
 void ContentManager::stringTransmitRequest(int id, QStringList display)

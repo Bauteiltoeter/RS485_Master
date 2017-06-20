@@ -15,6 +15,11 @@ QString ContentFinger::name()
     return "Finger";
 }
 
+QString ContentFinger::headerText()
+{
+    return "News of Fingers Welt";
+}
+
 void ContentFinger::send()
 {
     qDebug() << "ContentFinger::send activated";

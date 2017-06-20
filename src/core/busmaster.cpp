@@ -2,6 +2,7 @@
 #include "messagecontroller.h"
 #include <termios.h>
 #include <QDebug>
+#include <stdio.h>
 
 Busmaster::Busmaster()
 {
@@ -97,6 +98,11 @@ uint16_t Busmaster::calc_checksum(uint8_t *data, uint16_t length)
 
 int Busmaster::transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t *data)
 {
+    qDebug() << "Transmit from master to slave: id: " << id << " msg_id: " << msg_id << " length: " << length;
+
+    for(int i=0; i < length; i++)
+        printf("Data: %02X\n",data[i]);
+
     Busaction::Busaction_t* tmp = new Busaction::Busaction_t;
     tmp->type=Busaction::TRANSMIT_MASTER_SLAVE;
     tmp->t_id=transmit_id++;

@@ -10,6 +10,7 @@ public:
     ContentFinger(int id, QQmlApplicationEngine* qmlEngine);
 
     QString name();
+    QString headerText();
 
 private slots:
     void send();

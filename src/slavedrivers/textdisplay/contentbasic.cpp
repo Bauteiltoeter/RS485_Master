@@ -19,6 +19,16 @@ void ContentBasic::run()
 {
 }
 
+QString ContentBasic::headerText()
+{
+    return "";
+}
+
+QString ContentBasic::footerText()
+{
+    return "";
+}
+
 QObject *ContentBasic::mainWindow()
 {
     return gui;

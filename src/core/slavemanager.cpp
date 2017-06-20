@@ -1,6 +1,7 @@
 #include "slavemanager.h"
 #include "basicslave.h"
 #include "textdisplayslave.h"
+#include "powermeterslave.h"
 #include "message.h"
 #include "messagecontroller.h"
 #include "busmaster.h"
@@ -8,7 +9,8 @@
 #include <QDebug>
 
 typedef enum  {
-    TEXTDISPLAY = 2
+    TEXTDISPLAY = 2,
+    POWERMETER =3
 }slave_hw_t;
 
 SlaveManager::SlaveManager()
@@ -32,7 +34,8 @@ void SlaveManager::createSlave(uint16_t id, uint16_t hw_id)
     switch(hw_id)
     {
         case TEXTDISPLAY: newSlave = new TextDisplaySlave(id,hw_id); break;
-    default: MessageController::Instance()->addMessage(new Message(true,"Unknown hardware")); break;
+        case POWERMETER:  newSlave = new PowerMeterSlave(id,hw_id); break;
+        default: MessageController::Instance()->addMessage(new Message(true,"Unknown hardware")); break;
     }
 
     if(newSlave)
@@ -167,11 +170,15 @@ void SlaveManager::loadSlaves(QString filename)
     xmlFile.open(QIODevice::ReadOnly);
     xml.setDevice(&xmlFile);
 
-    if (xml.readNextStartElement() && xml.name() == "slaves")
-        processSlaves();
-    else if(xml.name() == "nextId")
+
+    while (xml.readNextStartElement())
     {
-        nextFreeId = readNextText().toInt();
+        if (xml.name() == "slaves")
+            processSlaves();
+        else if(xml.name() == "nextId")
+        {
+            nextFreeId = readNextText().toInt();
+        }
     }
 
 
@@ -197,6 +204,8 @@ void SlaveManager::saveSlaves(QString filename)
 
      QTextStream stream( &file );
 
+     stream << "<nextId>\n  "<<nextFreeId<<"\n</nextId>";
+
      stream << "<slaves>\n";
 
      foreach(auto slave, knownSlaves)
@@ -214,6 +223,7 @@ void SlaveManager::saveSlaves(QString filename)
 
 void SlaveManager::processSlaves()
 {
+    qDebug() << "reading slave";
     if (!xml.isStartElement() || xml.name() != "slaves")
         return;
     while (xml.readNextStartElement())

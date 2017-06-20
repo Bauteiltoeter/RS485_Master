@@ -47,3 +47,8 @@ void ContentMonitoring::run()
 
 
 }
+
+QString ContentMonitoring::headerText()
+{
+    return "Server monitor";
+}

@@ -5,23 +5,31 @@
 #include <QQmlApplicationEngine>
 #include "basicslave.h"
 
-namespace textdisplayslave_messages
+namespace slave_messages
 {
 
-    typedef struct
+    class msg_complete_update_t : public msg_basic
     {
-        uint8_t characters[4*20];
-        uint32_t dots[4];
-    } msg_complete_update_t;
+    public:
+        msg_complete_update_t() { msg_id=1;}
+        void serialise(uint8_t** buffer, uint8_t* length);
 
-    typedef struct
+        char characters[4*20];
+        uint32_t dots[4];
+    };
+
+    class msg_brightness_t : public msg_basic
     {
+    public:
+        msg_brightness_t() { msg_id=2;}
+        void serialise(uint8_t** buffer, uint8_t* length);
+
         uint8_t autocontrol;
         uint16_t brightness;
         uint8_t x2;
         uint8_t x1;
         uint8_t x0;
-    } msg_brightness_t;
+    };
 }
 
 class TextDisplaySlave : public BasicSlave
@@ -30,11 +38,6 @@ class TextDisplaySlave : public BasicSlave
 public:
     TextDisplaySlave(uint16_t id, uint16_t hw_id);
     QString getName();
-
-private:
-    void msg_complete_update_serialiser(textdisplayslave_messages::msg_complete_update_t* msg, uint8_t** buffer, uint8_t* length);
-    void msg_brightness_serialiser(textdisplayslave_messages::msg_brightness_t* msg, uint8_t** buffer, uint8_t* length);
-
 };
 
 #endif // TEXTDISPLAYSLAVE_H

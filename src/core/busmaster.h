@@ -46,6 +46,8 @@ public:
     Q_INVOKABLE void connect();
     Q_INVOKABLE int detectSlaves();
     Q_INVOKABLE int pingSlave(uint16_t slave_id);
+    void sendMessage(uint16_t slave_id, uint8_t* buffer, uint8_t length);
+    int transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t* data);
 
 private slots:
     void serialError(QString msg);
@@ -59,7 +61,6 @@ signals:
 private:
     uint16_t getFreeId();
     uint16_t calc_checksum(uint8_t* data, uint16_t length);
-    int transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t* data);
     void clearProcessing();
     void setTransmit();
     void setReceive();

@@ -16,7 +16,7 @@ void Display::paint(QPainter *painter)
         setHeight((displays.first()->height()+2)*_rows);
         for(int i=0; i < displays.size(); i++)
         {
-            displays[i]->setHeight(100);
+            displays[i]->setHeight(85);
             displays[i]->setX( (i%_columns) *(displays[i]->width()+2));
             displays[i]->setY( (i/_columns) *(displays[i]->height()+2));
 

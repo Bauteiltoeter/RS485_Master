@@ -14,6 +14,8 @@ public:
 
     virtual QString name();
     virtual void run();
+    virtual QString headerText();
+    virtual QString footerText();
     QObject* mainWindow();
     int getContentID();
 signals:

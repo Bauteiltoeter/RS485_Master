@@ -13,8 +13,8 @@ Panel {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 15
-        height: 100
-        width: 300
+        height: 50
+        width: 150
         rows: 4
         columns: 20
     }

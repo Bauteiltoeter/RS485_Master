@@ -11,6 +11,7 @@ public:
 
     QString name();
     void run();
+    QString headerText();
 
 
 private:

@@ -7,7 +7,7 @@
         <file>qml/Panel.qml</file>
         <file>qml/LCARSMessageWindow.qml</file>
         <file>qml/LCARSButton.qml</file>
-        <file>qml/FreeTextPanel.qml</file>
+        <file>qml/ContentFreetext.qml</file>
         <file>qml/LCARSTextField.qml</file>
         <file>qml/LCARSTextArea.qml</file>
         <file>qml/ConnectPanel.qml</file>
@@ -23,5 +23,6 @@
         <file>qml/HostList.qml</file>
         <file>qml/SlavePanel.qml</file>
         <file>qml/LCARSSelectableText.qml</file>
+        <file>qml/ContentPowermeter.qml</file>
     </qresource>
 </RCC>

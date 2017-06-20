@@ -14,6 +14,17 @@ namespace Slavestatus
     } slavestatus_t;
 }
 
+namespace slave_messages
+{
+    class msg_basic
+    {
+    protected: uint16_t msg_id;
+       public:
+       uint16_t getMsg_id() { return msg_id;}
+       virtual void serialise(uint8_t** buffer, uint8_t* length)=0;
+    };
+}
+
 class BasicSlave : public QObject
 {
     Q_OBJECT
@@ -28,7 +39,9 @@ public:
     Slavestatus::slavestatus_t getStatus();
     bool isSelected();
 
-private:
+protected:
+    void sendMessage(slave_messages::msg_basic* msg);
+
     uint16_t id;
     uint16_t hw_id;
     Slavestatus::slavestatus_t status;

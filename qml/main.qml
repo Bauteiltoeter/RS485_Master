@@ -70,7 +70,7 @@ ApplicationWindow {
                 onClicked: {
                     page="content"
                 }
-            },
+            }/*,
 
             LCARSSiteButton {
                 active: page=="chareditor" ? 20 : 0
@@ -81,7 +81,7 @@ ApplicationWindow {
                 onClicked: {
                     page="chareditor"
                 }
-            }
+            }*/
         ]
 
         contents: [
@@ -102,11 +102,11 @@ ApplicationWindow {
 
             DynamicPanel {
                 visible: page==="content"
-            },
+            }/*,
 
             CharacterPanel {
                 visible: page==="chareditor"
-            }
+            }*/
 
         ]
     }

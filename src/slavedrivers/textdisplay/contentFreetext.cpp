@@ -1,19 +1,19 @@
-#include "contentclock.h"
+#include "contentFreetext.h"
 #include <QDebug>
 #include <QDateTime>
 
-ContentClock::ContentClock(int id, QQmlApplicationEngine* qmlEngine)
+ContentFreetext::ContentFreetext(int id, QQmlApplicationEngine* qmlEngine)
     : ContentBasic(id,qmlEngine)
 {
-    createGUI("qrc:/qml/ContentClock.qml");
+    createGUI("qrc:/qml/ContentFreetext.qml");
 }
 
-QString ContentClock::name()
+QString ContentFreetext::name()
 {
-    return "Clock";
+    return "Free text";
 }
 
-void ContentClock::run()
+void ContentFreetext::run()
 {
     QStringList tmp;
 
@@ -32,7 +32,7 @@ void ContentClock::run()
     oldDate = date;
 }
 
-QString ContentClock::headerText()
+QString ContentFreetext::headerText()
 {
-    return "Simple clock";
+    return "Freetext writer";
 }

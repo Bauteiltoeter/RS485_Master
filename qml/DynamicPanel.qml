@@ -11,6 +11,9 @@ LCARSButtonPanel {
         ContentManager.load()
     }
 
+
+    header: ContentManager.headerText
+    footer: ContentManager.footerText
     buttons: ContentManager.buttons
     contents: ContentManager.mainWindows
 

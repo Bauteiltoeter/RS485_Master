@@ -1,4 +1,5 @@
 #include "basicslave.h"
+#include "busmaster.h"
 #include <QList>
 #include <QQmlComponent>
 BasicSlave::BasicSlave(uint16_t id, uint16_t hw_id)
@@ -80,4 +81,12 @@ bool BasicSlave::isSelected()
     }
 
     return tmp;
+}
+
+void BasicSlave::sendMessage(slave_messages::msg_basic* msg)
+{
+    uint8_t* buffer;
+    uint8_t length;
+    msg->serialise(&buffer,&length);
+    Busmaster::Instance()->transmit_master_slave(id,msg->getMsg_id(),length,buffer);
 }
