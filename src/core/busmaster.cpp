@@ -30,7 +30,7 @@ void Busmaster::connect()
     QObject::connect(serial,SIGNAL(connected()),this,SLOT(serialConnected()));
     QObject::connect(serial,SIGNAL(errorSignal(QString)),this,SLOT(serialError(QString)));
     QObject::connect(serial,SIGNAL(newData(uint8_t*,size_t)),SLOT(newSerialData(uint8_t*,size_t)));
-    serial->connect("/dev/ttyUSB2",B115200);
+    serial->connect("/dev/ttyUSB0",B115200);
 
     if(serial)
     {
@@ -113,6 +113,21 @@ int Busmaster::transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t lengt
     tmp->transfer_data->id = id;
     tmp->transfer_data->length = length;
     tmp->transfer_data->msg_id = msg_id;
+    actions.append(tmp);
+
+    return tmp->t_id;
+}
+
+int Busmaster::transmit_slave_master(uint16_t id, uint16_t msg_id, uint8_t length)
+{
+    qDebug() << "Transmit from slave to master: id: " << id << " msg_id: " << msg_id << " length: " << length;
+    Busaction::Busaction_t* tmp = new Busaction::Busaction_t;
+    tmp->type=Busaction::TRANSMIT_SLAVE_MASTER;
+    tmp->t_id=transmit_id++;
+    tmp->transfer_data= new Busaction::Transfer_data_t;
+    tmp->transfer_data->id = id;
+    tmp->transfer_data->length=length;
+    tmp->transfer_data->msg_id=msg_id;
     actions.append(tmp);
 
     return tmp->t_id;
@@ -276,17 +291,29 @@ void Busmaster::run()
                     buffer[7+processing->transfer_data->length] = processing->transfer_data->checksum>>8;
                     buffer[8+processing->transfer_data->length] = processing->transfer_data->checksum;
 
-                    setTransmit();
                     serial->writeBytes(buffer,9+processing->transfer_data->length);
-                    setReceive();
                 }
+                break;
+
+                case Busaction::TRANSMIT_SLAVE_MASTER:
+                    qDebug() << "Sending slave->master bytes";
+                    uint8_t buffer[8];
+                    buffer[0] = 0xAA;
+                    buffer[1] = processing->transfer_data->id>>8;
+                    buffer[2] = processing->transfer_data->id;
+                    buffer[3] = processing->transfer_data->msg_id>>8;
+                    buffer[4] = processing->transfer_data->msg_id;
+                    buffer[5] = 0x02; //slave->master transmit
+                    buffer[6] = processing->transfer_data->length;
+
+                    serial->writeBytes(buffer,7);
                 break;
             }
 
 
         }
         //serial->setDTR(false);
-        msleep(10);
+        msleep(2);
        // serial->setDTR(true);
 
       //  qDebug() << "Busmaster running";

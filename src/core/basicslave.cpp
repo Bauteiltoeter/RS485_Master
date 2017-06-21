@@ -83,7 +83,7 @@ bool BasicSlave::isSelected()
     return tmp;
 }
 
-void BasicSlave::sendMessage(slave_messages::msg_basic* msg)
+void BasicSlave::sendMessage(slave_messages::msg_master_slave* msg)
 {
     uint8_t* buffer;
     uint8_t length;

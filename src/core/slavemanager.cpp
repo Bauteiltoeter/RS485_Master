@@ -108,12 +108,12 @@ void SlaveManager::pingSlave()
 
     if(selected)
     {
-
         int t_id = Busmaster::Instance()->pingSlave(selected->getId());
         pingMap[t_id]=selected;
     }
     else
     {
+        MessageController::Instance()->addMessage(new Message(true,"Nothing selected"));
         qDebug() << "Nothing selected";
     }
 }

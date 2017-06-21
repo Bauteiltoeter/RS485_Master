@@ -8,20 +8,20 @@
 namespace slave_messages
 {
 
-    class msg_complete_update_t : public msg_basic
+    class msg_complete_update_t : public msg_master_slave
     {
     public:
-        msg_complete_update_t() { msg_id=1;}
+        msg_complete_update_t() { msg_id=2;}
         void serialise(uint8_t** buffer, uint8_t* length);
 
         char characters[4*20];
         uint32_t dots[4];
     };
 
-    class msg_brightness_t : public msg_basic
+    class msg_brightness_t : public msg_master_slave
     {
     public:
-        msg_brightness_t() { msg_id=2;}
+        msg_brightness_t() { msg_id=3;}
         void serialise(uint8_t** buffer, uint8_t* length);
 
         uint8_t autocontrol;

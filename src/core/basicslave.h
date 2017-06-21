@@ -16,12 +16,20 @@ namespace Slavestatus
 
 namespace slave_messages
 {
-    class msg_basic
+    class msg_master_slave
     {
     protected: uint16_t msg_id;
        public:
        uint16_t getMsg_id() { return msg_id;}
        virtual void serialise(uint8_t** buffer, uint8_t* length)=0;
+    };
+
+    class msg_slave_master
+    {
+    protected: uint16_t msg_id;
+       public:
+       uint16_t getMsg_id() { return msg_id;}
+       virtual void deserialise(uint8_t* buffer, uint8_t length)=0;
     };
 }
 
@@ -40,7 +48,7 @@ public:
     bool isSelected();
 
 protected:
-    void sendMessage(slave_messages::msg_basic* msg);
+    void sendMessage(slave_messages::msg_master_slave* msg);
 
     uint16_t id;
     uint16_t hw_id;
