@@ -30,7 +30,7 @@ void Busmaster::connect()
     QObject::connect(serial,SIGNAL(connected()),this,SLOT(serialConnected()));
     QObject::connect(serial,SIGNAL(errorSignal(QString)),this,SLOT(serialError(QString)));
     QObject::connect(serial,SIGNAL(newData(uint8_t*,size_t)),SLOT(newSerialData(uint8_t*,size_t)));
-    serial->connect("/dev/ttyUSB0",B115200);
+    serial->connect("/dev/ttyUSB2",B115200);
 
     if(serial)
     {

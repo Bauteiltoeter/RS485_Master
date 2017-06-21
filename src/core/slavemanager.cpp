@@ -171,17 +171,33 @@ void SlaveManager::loadSlaves(QString filename)
     xml.setDevice(&xmlFile);
 
 
-    while (xml.readNextStartElement())
+    if (xml.readNextStartElement())
     {
-        if (xml.name() == "slaves")
-            processSlaves();
-        else if(xml.name() == "nextId")
+        if (xml.name() == "configuration")
         {
-            nextFreeId = readNextText().toInt();
+            while(xml.readNextStartElement())
+            {
+                if(xml.name() == "nextId")
+                {
+                    nextFreeId = xml.readElementText().toInt();
+                    qDebug() << "Setting next free id: " << nextFreeId;
+                }
+                else if(xml.name() =="slaves")
+                {
+                    processSlaves();
+                }
+                else
+                {
+                    xml.skipCurrentElement();
+                }
+            }
+        }
+        else
+        {
+            xml.raiseError(QObject::tr("Incorrect file"));
+
         }
     }
-
-
 
     // readNextStartElement() leaves the stream in
     // an invalid state at the end. A single readNext()
@@ -202,22 +218,16 @@ void SlaveManager::saveSlaves(QString filename)
 
     file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
 
-     QTextStream stream( &file );
+    QTextStream stream( &file );
 
-     stream << "<nextId>\n  "<<nextFreeId<<"\n</nextId>";
+    stream << "<configuration>\n <nextId>\n   "<<nextFreeId<<"\n  </nextId>\n";
+    stream << " <slaves>\n";
+    foreach(auto slave, knownSlaves)
+    {
+        stream << "  <slave>\n   <id>" << QString::number(slave->getId()) << "</id>\n   <hw>" << QString::number(slave->getHwId()) << "</hw>\n  </slave>\n";
+    }
 
-     stream << "<slaves>\n";
-
-     foreach(auto slave, knownSlaves)
-     {
-
-         stream << " <slave>\n  <id>" << QString::number(slave->getId()) << "</id>\n  <hw>" << QString::number(slave->getHwId()) << "</hw>\n </slave>\n";
-
-
-         //names.append(""+ QString::number(slave->getId()) + ": " + slave->getName()) +"\n\n";
-     }
-
-     stream << "</slaves>";
+    stream << " </slaves>\n</configuration>";
     file.close();
 }
 
