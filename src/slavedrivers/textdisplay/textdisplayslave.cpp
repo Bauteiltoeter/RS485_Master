@@ -65,3 +65,10 @@ void slave_messages::msg_brightness_t::serialise(uint8_t** buffer, uint8_t* leng
 
     *buffer=tmp;
 }
+
+void slave_messages::msg_info_t::deserialise(uint8_t *buffer)
+{
+    rows = buffer[0];
+    columns = buffer[1];
+    delete buffer;
+}

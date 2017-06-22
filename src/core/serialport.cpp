@@ -19,7 +19,7 @@ SerialPort::~SerialPort()
     qDebug() << "Deleting serial port";
 }
 
-void SerialPort::connect(QString name, speed_t speed)
+int SerialPort::connect(QString name, speed_t speed)
 {
     SerialPort();
     qDebug() << "Opening SerialPort: " << name;
@@ -31,7 +31,7 @@ void SerialPort::connect(QString name, speed_t speed)
     if ( USB < 0 )
     {
         emit errorSignal("USB handler invalid");
-        return;
+        return 1;
     }
 
     /* *** Configure Port *** */
@@ -43,7 +43,7 @@ void SerialPort::connect(QString name, speed_t speed)
     {
         qDebug() << "Error: tcgerattr";
         emit errorSignal("tcgerattr");
-        return;
+        return 1;
     }
 
     /* Set Baud Rate */
@@ -73,12 +73,12 @@ void SerialPort::connect(QString name, speed_t speed)
     {
         qDebug() << QString("Error") + errno  + " from tcsetattr";
         errorSignal(QString("Error") + errno  + " from tcsetattr");
-        return;
+        return 1;
     }
 
     qDebug() << "emit connected";
     emit connected();
-
+    return 0;
 }
 
 void SerialPort::run()

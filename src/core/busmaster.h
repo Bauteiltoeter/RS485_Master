@@ -43,7 +43,7 @@ public:
     Busmaster();
     void run();
     static Busmaster* Instance();
-    Q_INVOKABLE void connect();
+    Q_INVOKABLE void connect(QString port);
     Q_INVOKABLE int detectSlaves();
     Q_INVOKABLE int pingSlave(uint16_t slave_id);
     int transmit_master_slave(uint16_t id, uint16_t msg_id, uint8_t length, uint8_t* data);

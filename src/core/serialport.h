@@ -11,7 +11,7 @@ class SerialPort : public QThread
 public:
     SerialPort();
     ~SerialPort();
-    void connect(QString name, speed_t speed);
+    int connect(QString name, speed_t speed);
     void run();
     void stop();
     void writeBytes(uint8_t* bytes, size_t length);

@@ -30,6 +30,16 @@ namespace slave_messages
         uint8_t x1;
         uint8_t x0;
     };
+
+    class msg_info_t : public msg_slave_master
+    {
+    public:
+        msg_info_t() { msg_id=2;}
+        void deserialise(uint8_t* buffer);
+
+        uint8_t rows;
+        uint8_t columns;
+    };
 }
 
 class TextDisplaySlave : public BasicSlave

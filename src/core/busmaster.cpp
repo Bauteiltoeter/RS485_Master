@@ -21,18 +21,18 @@ Busmaster* Busmaster::Instance()
     return singleton;
 }
 
-void Busmaster::connect()
+void Busmaster::connect(QString port)
 {
-    qDebug() << "Connecting busmaster";
+    qDebug() << "Connecting busmaster " << port;
 
     serial = new SerialPort();
 
     QObject::connect(serial,SIGNAL(connected()),this,SLOT(serialConnected()));
     QObject::connect(serial,SIGNAL(errorSignal(QString)),this,SLOT(serialError(QString)));
     QObject::connect(serial,SIGNAL(newData(uint8_t*,size_t)),SLOT(newSerialData(uint8_t*,size_t)));
-    serial->connect("/dev/ttyUSB0",B115200);
 
-    if(serial)
+
+    if(!serial->connect(port,B115200))
     {
         serial->start();
         setReceive();
@@ -57,7 +57,7 @@ int Busmaster::detectSlaves()
 
 int Busmaster::pingSlave(uint16_t slave_id)
 {
-    return transmit_master_slave(slave_id,1,0,NULL);
+    return  transmit_master_slave(slave_id,1,0,NULL);
 }
 
 void Busmaster::serialError(QString msg)
@@ -128,6 +128,7 @@ int Busmaster::transmit_slave_master(uint16_t id, uint16_t msg_id, uint8_t lengt
     tmp->transfer_data->id = id;
     tmp->transfer_data->length=length;
     tmp->transfer_data->msg_id=msg_id;
+    tmp->transfer_data->data=NULL;
     actions.append(tmp);
 
     return tmp->t_id;
@@ -156,7 +157,6 @@ void Busmaster::clearProcessing()
             delete processing->transfer_data;
         delete processing;
     }
-
     processing=NULL;
 }
 
@@ -164,6 +164,10 @@ void Busmaster::run()
 {
     while(1)
     {
+
+    //################
+    //Process transmit errors
+    //################
         if(processing && processing->myTimer.elapsed() > 500)
         {
             qDebug() << "Timeout!";
@@ -171,16 +175,16 @@ void Busmaster::run()
             switch(processing->type)
             {
                 case Busaction::ID_INIT: MessageController::Instance()->addMessage(new Message(false, "No new slaves")); break;
-                case Busaction::TRANSMIT_MASTER_SLAVE: /*MessageController::Instance()->addMessage((new Message(true,"Slave does not responde"))); */break;
+                case Busaction::TRANSMIT_MASTER_SLAVE: MessageController::Instance()->addMessage((new Message(true,"m->s Slave does not responde"))); break;
+                case Busaction::TRANSMIT_SLAVE_MASTER: MessageController::Instance()->addMessage((new Message(true,"s->m Slave does not responde"))); break;
             }
-
             emit transmitError(processing->t_id);
-
-
             clearProcessing();
-
         }
 
+    //################
+    //Process incoming bytes
+    //################
         if(!incomingBytes.empty())
         {
             if(processing==NULL)
@@ -243,12 +247,34 @@ void Busmaster::run()
 
                         }
                     break;
+
+                case Busaction::TRANSMIT_SLAVE_MASTER:
+                    qDebug() << "processing->transfer_data->length: " << processing->transfer_data->length;
+                    if(incomingBytes.size() >= processing->transfer_data->length)
+                    {
+                        qDebug() << "Received enough bytes (" << incomingBytes.size() <<")";
+                        uint8_t* data = new uint8_t[processing->transfer_data->length];
+                        qDebug() << "Received Data: ";
+                        for(int i=0; i < processing->transfer_data->length; i++)
+                        {
+                            data[i] = incomingBytes.first();
+                            incomingBytes.removeFirst();
+                            qDebug() << "byte: " << data[i];
+                        }
+                        clearProcessing();
+
+                    }
+
+
+                    break;
                 }
             }
 
         }
 
-
+    //################
+    //Process new package
+    //################
         if(!actions.empty() && processing==NULL)
         {
             qDebug() << "Oh stuff to do!";

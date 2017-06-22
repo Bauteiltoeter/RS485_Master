@@ -29,7 +29,7 @@ namespace slave_messages
     protected: uint16_t msg_id;
        public:
        uint16_t getMsg_id() { return msg_id;}
-       virtual void deserialise(uint8_t* buffer, uint8_t length)=0;
+       virtual void deserialise(uint8_t* buffer)=0;
     };
 }
 
@@ -46,6 +46,9 @@ public:
     void setStatus(Slavestatus::slavestatus_t status);
     Slavestatus::slavestatus_t getStatus();
     bool isSelected();
+
+private slots:
+
 
 protected:
     void sendMessage(slave_messages::msg_master_slave* msg);
