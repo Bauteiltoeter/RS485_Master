@@ -9,6 +9,7 @@
 #include <time.h>
 #include <stdint.h>
 #include "slavemanager.h"
+#include "basicslave.h"
 
 #define TIMEOUT_MS 2
 
@@ -57,6 +58,8 @@ private slots:
 signals:
     void transmitSuccess(int t_id);
     void transmitError(int t_id);
+    void receiveSuccess(int t_id, uint8_t* data);
+    void receiveError(int t_id);
 
 private:
     uint16_t getFreeId();

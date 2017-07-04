@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QQuickItem>
 #include <QQmlApplicationEngine>
+#include <QMap>
 
 namespace Slavestatus
 {
@@ -27,8 +28,10 @@ namespace slave_messages
     class msg_slave_master
     {
     protected: uint16_t msg_id;
+               uint8_t length;
        public:
        uint16_t getMsg_id() { return msg_id;}
+       uint8_t getLength() { return length;}
        virtual void deserialise(uint8_t* buffer)=0;
     };
 }
@@ -39,6 +42,7 @@ class BasicSlave : public QObject
 public:
     BasicSlave(uint16_t id, uint16_t hw_id);
     virtual QString getName();
+    virtual void testSlave();
 
     void initGUI(QQmlApplicationEngine* engine);
     uint16_t getId();
@@ -48,15 +52,20 @@ public:
     bool isSelected();
 
 private slots:
-
+    void receiveSuccess(int t_id, uint8_t* data);
 
 protected:
     void sendMessage(slave_messages::msg_master_slave* msg);
+    void requestMessage(slave_messages::msg_slave_master* msg);
 
     uint16_t id;
     uint16_t hw_id;
     Slavestatus::slavestatus_t status;
     QQuickItem *qmlComponent;
+    QMap<int, slave_messages::msg_slave_master*> receiveMap;
+
+private:
+    bool signalsConnected;
 };
 
 #endif // BASICSLAVE_H

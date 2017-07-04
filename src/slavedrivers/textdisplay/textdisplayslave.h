@@ -24,6 +24,7 @@ namespace slave_messages
         msg_brightness_t() { msg_id=3;}
         void serialise(uint8_t** buffer, uint8_t* length);
 
+        uint8_t on_off;
         uint8_t autocontrol;
         uint16_t brightness;
         uint8_t x2;
@@ -31,10 +32,11 @@ namespace slave_messages
         uint8_t x0;
     };
 
+
     class msg_info_t : public msg_slave_master
     {
     public:
-        msg_info_t() { msg_id=2;}
+        msg_info_t() { msg_id=2; length=2; }
         void deserialise(uint8_t* buffer);
 
         uint8_t rows;
@@ -48,6 +50,7 @@ class TextDisplaySlave : public BasicSlave
 public:
     TextDisplaySlave(uint16_t id, uint16_t hw_id);
     QString getName();
+    void testSlave();
 };
 
 #endif // TEXTDISPLAYSLAVE_H

@@ -55,6 +55,14 @@ Panel {
         rows: 1
 
         LCARSButton {
+            text: "Test slave"
+            invert: true
+            onClicked: {
+                SlaveManager.testSlave();
+            }
+        }
+
+        LCARSButton {
             text: "Ping slave"
             invert: true
             onClicked: {

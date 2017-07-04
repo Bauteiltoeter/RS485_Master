@@ -128,6 +128,20 @@ void SlaveManager::removeSlave()
 
 }
 
+void SlaveManager::testSlave()
+{
+    BasicSlave* selected = getSelected();
+
+    if(selected)
+    {
+        selected->testSlave();
+    }
+    else
+    {
+        MessageController::Instance()->addMessage(new Message(true,"Nothing selected"));
+    }
+}
+
 BasicSlave *SlaveManager::getSelected()
 {
     foreach(BasicSlave* slave, knownSlaves)

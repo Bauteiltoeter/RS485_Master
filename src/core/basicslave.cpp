@@ -15,6 +15,11 @@ QString BasicSlave::getName()
     return "BasicClass";
 }
 
+void BasicSlave::testSlave()
+{
+    qDebug() << "testSlave called on base class!";
+}
+
 void BasicSlave::initGUI(QQmlApplicationEngine *engine)
 {
     QList<QObject*> rootObject = engine->rootObjects();
@@ -83,10 +88,33 @@ bool BasicSlave::isSelected()
     return tmp;
 }
 
+void BasicSlave::receiveSuccess(int t_id, uint8_t *data)
+{
+    if(receiveMap.contains(t_id))
+    {
+        receiveMap[t_id]->deserialise(data);
+    }
+}
+
 void BasicSlave::sendMessage(slave_messages::msg_master_slave* msg)
 {
     uint8_t* buffer;
     uint8_t length;
     msg->serialise(&buffer,&length);
     Busmaster::Instance()->transmit_master_slave(id,msg->getMsg_id(),length,buffer);
+}
+
+void BasicSlave::requestMessage(slave_messages::msg_slave_master *msg)
+{
+    if(!signalsConnected)
+    {
+        qDebug() << "Connecting signals vom BasicSlave to Busmaster";
+        signalsConnected=true;
+
+        connect(Busmaster::Instance(),SIGNAL(receiveSuccess(int,uint8_t*)),this,SLOT(receiveSuccess(int,uint8_t*)));
+    }
+
+    int t_id = Busmaster::Instance()->transmit_slave_master(id, msg->getMsg_id(),msg->getLength());
+
+    receiveMap[t_id] = msg;
 }

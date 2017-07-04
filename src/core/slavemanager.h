@@ -27,6 +27,7 @@ public:
     Q_INVOKABLE void pingSlave();
     Q_INVOKABLE void resetSlaveID();
     Q_INVOKABLE void removeSlave();
+    Q_INVOKABLE void testSlave();
 
 private slots:
     void transmitSuccess(int t_id);

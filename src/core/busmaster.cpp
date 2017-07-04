@@ -168,7 +168,7 @@ void Busmaster::run()
     //################
     //Process transmit errors
     //################
-        if(processing && processing->myTimer.elapsed() > 500)
+        if(processing && processing->myTimer.elapsed() > 1500)
         {
             qDebug() << "Timeout!";
 
@@ -261,6 +261,8 @@ void Busmaster::run()
                             incomingBytes.removeFirst();
                             qDebug() << "byte: " << data[i];
                         }
+
+                        emit receiveSuccess(processing->t_id, data);
                         clearProcessing();
 
                     }
